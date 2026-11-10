@@ -1,212 +1,493 @@
-/* =============================================================================
-   Création de la base de démonstration PHP / PDO / SQL Server
-   -----------------------------------------------------------------------------
-   Exécution :
-     - SSMS / Azure Data Studio : ouvrir le fichier et exécuter (F5)
-     - Ligne de commande :
-         sqlcmd -S "(localdb)\MSSQLLocalDB" -E -i create-database.sql
-         sqlcmd -S localhost -E -i create-database.sql
-   ============================================================================= */
-/* -----------------------------------------------------------------------------
-   1. Base de données
-   -------------------------------------------------------------------------- */
+/* 
+   1. DATABASE CREATION
+    */
+
 USE master;
-
-
 GO
--- Le script est réexécutable : on repart d'une base propre.
--- SINGLE_USER ... ROLLBACK IMMEDIATE ferme les connexions en cours,
--- sans quoi le DROP échouerait.
-IF DB_ID('demo_pdo') IS NOT NULL
-    BEGIN
-        ALTER DATABASE demo_pdo
-            SET SINGLE_USER 
-            WITH ROLLBACK IMMEDIATE;
-        DROP DATABASE demo_pdo;
-    END
 
+-- Recreate the database if it already exists.
+IF DB_ID('foodiz') IS NOT NULL
+BEGIN
+    ALTER DATABASE foodiz
+        SET SINGLE_USER
+        WITH ROLLBACK IMMEDIATE;
 
+    DROP DATABASE foodiz;
+END
 GO
-CREATE DATABASE demo_pdo;
 
-
+CREATE DATABASE foodiz;
 GO
-/* -----------------------------------------------------------------------------
-   2. Connexion (login) et utilisateur (user)
-   -----------------------------------------------------------------------------
-   Différence essentielle avec MySQL : SQL Server sépare deux notions.
 
-     LOGIN  -> niveau SERVEUR   : permet de se connecter à l'instance
-     USER   -> niveau BASE      : permet d'accéder à une base précise
-
-   Un LOGIN sans USER peut se connecter mais ne voit aucune base.
-   -------------------------------------------------------------------------- */
-USE master;
-
-
+USE foodiz;
 GO
-IF SUSER_ID('demo_user') IS NOT NULL
-    DROP LOGIN demo_user;
 
 
-GO
-CREATE LOGIN demo_user
-    WITH PASSWORD = 'Test1234=', DEFAULT_DATABASE = demo_pdo, CHECK_POLICY = OFF;
+/* 
+   2. USERS
+  */
 
+CREATE TABLE dbo.users (
+    id_user INT IDENTITY(1,1) NOT NULL,
+    firstname NVARCHAR(100) NOT NULL,
+    lastname NVARCHAR(100) NOT NULL,
+    email NVARCHAR(150) NOT NULL,
+    password_hash NVARCHAR(255) NOT NULL,
+    created_at DATETIME2 DEFAULT SYSDATETIME(),
 
-GO
-USE demo_pdo;
-
-
-GO
-CREATE USER demo_user FOR LOGIN demo_user;
-
-
-GO
--- Droits minimaux : lecture + écriture sur les données.
--- On évite db_owner, qui donnerait tous les droits (dont DROP TABLE).
-ALTER ROLE db_datareader ADD MEMBER demo_user;
-
-ALTER ROLE db_datawriter ADD MEMBER demo_user;
-
-
-GO
-/* -----------------------------------------------------------------------------
-   3. Tables liées (relation 1-N : un auteur écrit plusieurs livres)
-   -------------------------------------------------------------------------- */
-USE demo_pdo;
-
-
-GO
--- Ordre de suppression inverse de l'ordre de création :
--- la table qui porte la clé étrangère part en premier.
-DROP TABLE IF EXISTS dbo.livre;
-
-DROP TABLE IF EXISTS dbo.auteur;
-
-
-GO
-CREATE TABLE dbo.auteur (
-    id          INT            IDENTITY (1, 1) NOT NULL,
-    nom         NVARCHAR (100) NOT NULL,
-    prenom      NVARCHAR (100) NOT NULL,
-    nationalite NVARCHAR (60)  NULL,
-    CONSTRAINT PK_auteur PRIMARY KEY (id)
+    CONSTRAINT PK_users PRIMARY KEY (id_user),
+    CONSTRAINT UQ_users_email UNIQUE (email)
 );
-
-
 GO
-CREATE TABLE dbo.livre (
-    id        INT            IDENTITY (1, 1) NOT NULL,
-    titre     NVARCHAR (200) NOT NULL,
-    annee     SMALLINT       NULL,
-    prix      DECIMAL (6, 2) NULL,
-    isbn      CHAR (13)      NULL,
-    auteur_id INT            NOT NULL,
-    CONSTRAINT PK_livre PRIMARY KEY (id),
-    CONSTRAINT CK_livre_prix CHECK (prix >= 0),
-    -- La clé étrangère : c'est elle qui « lie » les deux tables.
-    -- ON DELETE CASCADE : supprimer un auteur supprime ses livres.
-    CONSTRAINT FK_livre_auteur FOREIGN KEY (auteur_id) REFERENCES dbo.auteur (id) ON DELETE CASCADE ON UPDATE NO ACTION
+
+
+/* 
+   3. USER PREFERENCES
+   */
+
+CREATE TABLE dbo.user_preferences (
+    id_preference INT IDENTITY(1,1) NOT NULL,
+    user_id INT NOT NULL,
+    budget DECIMAL(8,2) NOT NULL,
+    budget_period NVARCHAR(20) NOT NULL,
+    number_of_people INT NOT NULL,
+    max_cooking_time INT NULL,
+
+    CONSTRAINT PK_user_preferences PRIMARY KEY (id_preference),
+
+    CONSTRAINT UQ_user_preferences_user UNIQUE (user_id),
+
+    CONSTRAINT CK_user_preferences_budget
+        CHECK (budget > 0),
+
+    CONSTRAINT CK_user_preferences_people
+        CHECK (number_of_people > 0),
+
+    CONSTRAINT CK_user_preferences_period
+        CHECK (budget_period IN ('weekly', 'monthly')),
+
+    CONSTRAINT FK_user_preferences_users
+        FOREIGN KEY (user_id)
+        REFERENCES dbo.users(id_user)
+        ON DELETE CASCADE
 );
-
-
 GO
--- Index sur la clé étrangère : SQL Server ne le crée pas automatiquement,
--- contrairement à MySQL/InnoDB. Utile dès que l'on fait des JOIN.
-CREATE INDEX IX_livre_auteur_id
-    ON dbo.livre(auteur_id);
 
 
+/* 
+   4. DIETARY CATEGORIES
+   */
+
+CREATE TABLE dbo.dietary_categories (
+    id_category INT IDENTITY(1,1) NOT NULL,
+    name NVARCHAR(100) NOT NULL,
+    description NVARCHAR(500) NULL,
+
+    CONSTRAINT PK_dietary_categories PRIMARY KEY (id_category),
+    CONSTRAINT UQ_dietary_categories_name UNIQUE (name)
+);
 GO
--- QUOTED_IDENTIFIER ON est OBLIGATOIRE pour créer un index filtré.
--- SSMS l'active par défaut, sqlcmd NON : sans cette ligne, le script échoue
--- en ligne de commande avec « Msg 1934 ... incorrect settings: QUOTED_IDENTIFIER ».
-SET QUOTED_IDENTIFIER ON;
 
 
+/* 
+   5. USER DIETARY CATEGORIES
+   */
+
+CREATE TABLE dbo.user_dietary_categories (
+    user_id INT NOT NULL,
+    category_id INT NOT NULL,
+
+    CONSTRAINT PK_user_dietary_categories
+        PRIMARY KEY (user_id, category_id),
+
+    CONSTRAINT FK_user_categories_users
+        FOREIGN KEY (user_id)
+        REFERENCES dbo.users(id_user)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_user_categories_categories
+        FOREIGN KEY (category_id)
+        REFERENCES dbo.dietary_categories(id_category)
+        ON DELETE CASCADE
+);
 GO
--- Unicité de l'ISBN.
---
--- ATTENTION : une CONSTRAINT ... UNIQUE (isbn) ne convient PAS ici.
--- SQL Server traite NULL comme une valeur ordinaire dans une contrainte UNIQUE
--- et n'en accepte donc QU'UN SEUL : le deuxième livre sans ISBN serait rejeté
--- avec « Violation of UNIQUE KEY constraint ... duplicate key value is (<NULL>) ».
--- La plupart des autres SGBD (MySQL, PostgreSQL) acceptent plusieurs NULL.
---
--- La solution SQL Server est un index unique FILTRÉ : l'unicité ne s'applique
--- qu'aux lignes qui ont réellement un ISBN.
-CREATE UNIQUE INDEX UQ_livre_isbn
-    ON dbo.livre(isbn) WHERE isbn IS NOT NULL;
 
 
+/* 
+   6. ALLERGIES
+    */
+
+CREATE TABLE dbo.allergies (
+    id_allergy INT IDENTITY(1,1) NOT NULL,
+    name NVARCHAR(100) NOT NULL,
+
+    CONSTRAINT PK_allergies PRIMARY KEY (id_allergy),
+    CONSTRAINT UQ_allergies_name UNIQUE (name)
+);
 GO
-/* -----------------------------------------------------------------------------
-   4. Jeu de données de test
-   -------------------------------------------------------------------------- */
--- Les auteurs sont insérés en premier : la table livre porte la clé étrangère,
--- elle ne peut référencer que des auteurs qui existent déjà.
--- La base vient d'être créée, donc les IDENTITY partent de 1 dans l'ordre
--- d'insertion : Tolkien = 1, Le Guin = 2, etc.
-INSERT  INTO dbo.auteur (
-    nom,
-    prenom,
-    nationalite
-)
-VALUES                 (N'Tolkien', N'J.R.R.', N'Britannique'),
-(N'Le Guin', N'Ursula K.', N'Américaine'),
-(N'Pratchett', N'Terry', N'Britannique'),
-(N'Gaiman', N'Neil', N'Britannique'),
-(N'Hobb', N'Robin', N'Américaine'),
-(N'Bottero', N'Pierre', N'Française'),
-(N'Jaworski', N'Jean-Philippe', N'Française'),
-(N'Ende', N'Michael', N'Allemande');
 
 
+/* 
+   7. USER ALLERGIES
+   */
+
+CREATE TABLE dbo.user_allergies (
+    user_id INT NOT NULL,
+    allergy_id INT NOT NULL,
+
+    CONSTRAINT PK_user_allergies
+        PRIMARY KEY (user_id, allergy_id),
+
+    CONSTRAINT FK_user_allergies_users
+        FOREIGN KEY (user_id)
+        REFERENCES dbo.users(id_user)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_user_allergies_allergies
+        FOREIGN KEY (allergy_id)
+        REFERENCES dbo.allergies(id_allergy)
+        ON DELETE CASCADE
+);
 GO
--- Les ISBN ci-dessous sont FICTIFS : ils respectent le format à 13 chiffres
--- pour les exercices, mais ne correspondent pas aux éditions réelles.
---
--- Trois livres ont volontairement un ISBN à NULL, et l'un d'eux n'a ni année
--- ni prix : c'est ce qui permet de vérifier que les colonnes facultatives
--- fonctionnent, et que l'index unique FILTRÉ accepte bien plusieurs NULL
--- (ce qu'une contrainte UNIQUE classique refuserait sous SQL Server).
-INSERT  INTO dbo.livre (
-    titre,
-    annee,
-    prix,
-    isbn,
-    auteur_id
-)
-VALUES                (N'Le Hobbit', 1937, 9.90, '9781000000011', 1),
-(N'La Communauté de l''anneau', 1954, 12.50, '9781000000028', 1),
-(N'Le Silmarillion', 1977, 14.20, '9781000000035', 1),
-(N'Le Sorcier de Terremer', 1968, 8.60, '9781000000042', 2),
-(N'Les Tombeaux d''Atuan', 1971, 8.60, '9781000000059', 2),
-(N'La Main gauche de la nuit', 1969, 9.20, NULL, 2),
-(N'La Huitième Couleur', 1983, 7.90, '9781000000066', 3),
-(N'Mortimer', 1987, 7.90, '9781000000073', 3),
-(N'Les Petits Dieux', 1992, 8.40, NULL, 3),
-(N'Neverwhere', 1996, 10.90, '9781000000080', 4),
-(N'American Gods', 2001, 13.50, '9781000000097', 4),
-(N'Coraline', 2002, 6.50, '9781000000103', 4),
-(N'L''Assassin royal : L''Apprenti assassin', 1995, 11.80, '9781000000110', 5),
-(N'L''Assassin royal : L''Assassin du roi', 1996, 11.80, '9781000000127', 5),
-(N'La Quête d''Ewilan : D''un monde à l''autre', 2003, 8.90, '9781000000134', 6),
-(N'Gagner la guerre', 2009, 16.00, '9781000000141', 7),
-(N'L''Histoire sans fin', 1979, 10.20, '9781000000158', 8),
-(N'Momo', NULL, NULL, NULL, 8);
 
 
+/* 
+   8. APPLIANCES
+   */
+
+CREATE TABLE dbo.appliances (
+    id_appliance INT IDENTITY(1,1) NOT NULL,
+    name NVARCHAR(100) NOT NULL,
+
+    CONSTRAINT PK_appliances PRIMARY KEY (id_appliance),
+    CONSTRAINT UQ_appliances_name UNIQUE (name)
+);
 GO
-/* -----------------------------------------------------------------------------
-   5. Vérification
-   -------------------------------------------------------------------------- */
-SELECT   a.nom + ' ' + a.prenom AS auteur,
-         COUNT(l.id) AS nb_livres
-FROM     dbo.auteur AS a
-         LEFT OUTER JOIN
-         dbo.livre AS l
-         ON l.auteur_id = a.id
-GROUP BY a.nom, a.prenom
-ORDER BY auteur;
+
+
+/* 
+   9. USER APPLIANCES
+    */
+
+CREATE TABLE dbo.user_appliances (
+    user_id INT NOT NULL,
+    appliance_id INT NOT NULL,
+
+    CONSTRAINT PK_user_appliances
+        PRIMARY KEY (user_id, appliance_id),
+
+    CONSTRAINT FK_user_appliances_users
+        FOREIGN KEY (user_id)
+        REFERENCES dbo.users(id_user)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_user_appliances_appliances
+        FOREIGN KEY (appliance_id)
+        REFERENCES dbo.appliances(id_appliance)
+        ON DELETE CASCADE
+);
+GO
+
+
+/* 
+   10. RECIPES
+    */
+
+CREATE TABLE dbo.recipes (
+    id_recipe INT IDENTITY(1,1) NOT NULL,
+    name NVARCHAR(150) NOT NULL,
+    description NVARCHAR(MAX) NULL,
+    instructions NVARCHAR(MAX) NOT NULL,
+    preparation_time INT NULL,
+    cooking_time INT NULL,
+    estimated_cost DECIMAL(8,2) NOT NULL,
+    servings INT NOT NULL,
+    image NVARCHAR(255) NULL,
+
+    CONSTRAINT PK_recipes PRIMARY KEY (id_recipe),
+
+    CONSTRAINT CK_recipes_cost
+        CHECK (estimated_cost >= 0),
+
+    CONSTRAINT CK_recipes_servings
+        CHECK (servings > 0),
+
+    CONSTRAINT CK_recipes_preparation_time
+        CHECK (preparation_time >= 0 OR preparation_time IS NULL),
+
+    CONSTRAINT CK_recipes_cooking_time
+        CHECK (cooking_time >= 0 OR cooking_time IS NULL)
+);
+GO
+
+
+/* 
+   11. INGREDIENTS
+   */
+
+CREATE TABLE dbo.ingredients (
+    id_ingredient INT IDENTITY(1,1) NOT NULL,
+    name NVARCHAR(100) NOT NULL,
+
+    CONSTRAINT PK_ingredients PRIMARY KEY (id_ingredient),
+    CONSTRAINT UQ_ingredients_name UNIQUE (name)
+);
+GO
+
+
+/* 
+   12. RECIPE INGREDIENTS
+   */
+
+CREATE TABLE dbo.recipe_ingredients (
+    recipe_id INT NOT NULL,
+    ingredient_id INT NOT NULL,
+    quantity DECIMAL(10,2) NULL,
+    unit NVARCHAR(30) NULL,
+
+    CONSTRAINT PK_recipe_ingredients
+        PRIMARY KEY (recipe_id, ingredient_id),
+
+    CONSTRAINT CK_recipe_ingredients_quantity
+        CHECK (quantity >= 0 OR quantity IS NULL),
+
+    CONSTRAINT FK_recipe_ingredients_recipes
+        FOREIGN KEY (recipe_id)
+        REFERENCES dbo.recipes(id_recipe)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_recipe_ingredients_ingredients
+        FOREIGN KEY (ingredient_id)
+        REFERENCES dbo.ingredients(id_ingredient)
+        ON DELETE CASCADE
+);
+GO
+
+
+/* 
+   13. RECIPE CATEGORIES
+  */
+
+CREATE TABLE dbo.recipe_categories (
+    recipe_id INT NOT NULL,
+    category_id INT NOT NULL,
+
+    CONSTRAINT PK_recipe_categories
+        PRIMARY KEY (recipe_id, category_id),
+
+    CONSTRAINT FK_recipe_categories_recipes
+        FOREIGN KEY (recipe_id)
+        REFERENCES dbo.recipes(id_recipe)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_recipe_categories_categories
+        FOREIGN KEY (category_id)
+        REFERENCES dbo.dietary_categories(id_category)
+        ON DELETE CASCADE
+);
+GO
+
+
+/* 
+   14. RECIPE APPLIANCES
+   */
+
+CREATE TABLE dbo.recipe_appliances (
+    recipe_id INT NOT NULL,
+    appliance_id INT NOT NULL,
+
+    CONSTRAINT PK_recipe_appliances
+        PRIMARY KEY (recipe_id, appliance_id),
+
+    CONSTRAINT FK_recipe_appliances_recipes
+        FOREIGN KEY (recipe_id)
+        REFERENCES dbo.recipes(id_recipe)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_recipe_appliances_appliances
+        FOREIGN KEY (appliance_id)
+        REFERENCES dbo.appliances(id_appliance)
+        ON DELETE CASCADE
+);
+GO
+
+
+/* 
+   15. RECIPE ALLERGIES
+   */
+
+CREATE TABLE dbo.recipe_allergies (
+    recipe_id INT NOT NULL,
+    allergy_id INT NOT NULL,
+
+    CONSTRAINT PK_recipe_allergies
+        PRIMARY KEY (recipe_id, allergy_id),
+
+    CONSTRAINT FK_recipe_allergies_recipes
+        FOREIGN KEY (recipe_id)
+        REFERENCES dbo.recipes(id_recipe)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_recipe_allergies_allergies
+        FOREIGN KEY (allergy_id)
+        REFERENCES dbo.allergies(id_allergy)
+        ON DELETE CASCADE
+);
+GO
+
+
+/* 
+   16. SAVED RECIPES
+    */
+
+CREATE TABLE dbo.saved_recipes (
+    user_id INT NOT NULL,
+    recipe_id INT NOT NULL,
+    saved_at DATETIME2 DEFAULT SYSDATETIME(),
+
+    CONSTRAINT PK_saved_recipes
+        PRIMARY KEY (user_id, recipe_id),
+
+    CONSTRAINT FK_saved_recipes_users
+        FOREIGN KEY (user_id)
+        REFERENCES dbo.users(id_user)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_saved_recipes_recipes
+        FOREIGN KEY (recipe_id)
+        REFERENCES dbo.recipes(id_recipe)
+        ON DELETE CASCADE
+);
+GO
+
+
+/* 
+   17. FOOD BANKS
+   */
+
+CREATE TABLE dbo.food_banks (
+    id_food_bank INT IDENTITY(1,1) NOT NULL,
+    name NVARCHAR(150) NOT NULL,
+    address NVARCHAR(255) NOT NULL,
+    postal_code NVARCHAR(20) NULL,
+    city NVARCHAR(100) NOT NULL,
+    latitude DECIMAL(10,7) NULL,
+    longitude DECIMAL(10,7) NULL,
+    opening_hours NVARCHAR(MAX) NULL,
+    phone NVARCHAR(30) NULL,
+
+    CONSTRAINT PK_food_banks PRIMARY KEY (id_food_bank),
+
+    CONSTRAINT CK_food_banks_latitude
+        CHECK (latitude BETWEEN -90 AND 90 OR latitude IS NULL),
+
+    CONSTRAINT CK_food_banks_longitude
+        CHECK (longitude BETWEEN -180 AND 180 OR longitude IS NULL)
+);
+GO
+
+
+/* 
+   18. INITIAL DIETARY CATEGORIES
+    */
+
+INSERT INTO dbo.dietary_categories (name, description)
+VALUES
+(N'Vegan', N'No animal products'),
+(N'Vegetarian', N'No meat or fish'),
+(N'Lactose-free', N'No lactose'),
+(N'Gluten-free', N'No gluten'),
+(N'Pescatarian', N'Fish and seafood allowed, no meat'),
+(N'Regular', N'No specific dietary restrictions');
+GO
+
+
+/* 
+   19. INITIAL APPLIANCES
+    */
+
+INSERT INTO dbo.appliances (name)
+VALUES
+(N'Oven'),
+(N'Microwave'),
+(N'Stovetop'),
+(N'Air fryer'),
+(N'Blender'),
+(N'Food processor'),
+(N'Rice cooker');
+GO
+
+
+/* 
+   20. INITIAL ALLERGIES
+    */
+
+INSERT INTO dbo.allergies (name)
+VALUES
+(N'Peanuts'),
+(N'Tree nuts'),
+(N'Milk'),
+(N'Eggs'),
+(N'Soy'),
+(N'Fish'),
+(N'Shellfish'),
+(N'Wheat'),
+(N'Sesame');
+GO
+
+
+/* 
+   21. INDEXES
+    */
+
+CREATE INDEX IX_user_preferences_user_id
+    ON dbo.user_preferences(user_id);
+
+CREATE INDEX IX_user_categories_category_id
+    ON dbo.user_dietary_categories(category_id);
+
+CREATE INDEX IX_recipe_categories_category_id
+    ON dbo.recipe_categories(category_id);
+
+CREATE INDEX IX_recipe_ingredients_ingredient_id
+    ON dbo.recipe_ingredients(ingredient_id);
+
+CREATE INDEX IX_food_banks_city
+    ON dbo.food_banks(city);
+GO
+
+
+/* 
+   22. DATABASE VERIFICATION
+    */
+
+-- Display all tables.
+SELECT TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE'
+ORDER BY TABLE_NAME;
+
+
+-- Display the number of dietary categories.
+SELECT COUNT(*) AS total_dietary_categories
+FROM dbo.dietary_categories;
+
+
+-- Display all dietary categories.
+SELECT *
+FROM dbo.dietary_categories
+ORDER BY id_category;
+
+
+-- Display all appliances.
+SELECT *
+FROM dbo.appliances
+ORDER BY id_appliance;
+
+
+-- Display all allergies.
+SELECT *
+FROM dbo.allergies
+ORDER BY id_allergy;
+GO
+
