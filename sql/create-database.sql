@@ -1,19 +1,12 @@
-/* 
-   1. DATABASE CREATION
-    */
 
 USE master;
 GO
 
--- Recreate the database if it already exists.
 IF DB_ID('foodiz') IS NOT NULL
 BEGIN
-    ALTER DATABASE foodiz
-        SET SINGLE_USER
-        WITH ROLLBACK IMMEDIATE;
-
+    ALTER DATABASE foodiz SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
     DROP DATABASE foodiz;
-END
+END;
 GO
 
 CREATE DATABASE foodiz;
@@ -22,10 +15,49 @@ GO
 USE foodiz;
 GO
 
-/**/
-/* 
-   2. USERS
-  */
+/* -----------------------------------------------------------------------------
+   2. Connexion (login) et utilisateur (user)
+   -----------------------------------------------------------------------------
+   Différence essentielle avec MySQL : SQL Server sépare deux notions.
+
+     LOGIN  -> niveau SERVEUR   : permet de se connecter à l'instance
+     USER   -> niveau BASE      : permet d'accéder à une base précise
+
+   Un LOGIN sans USER peut se connecter mais ne voit aucune base.
+   -------------------------------------------------------------------------- */
+USE master;
+
+GO
+IF SUSER_ID('demo_user') IS NOT NULL
+    DROP LOGIN demo_user;
+
+
+GO
+CREATE LOGIN demo_user
+    WITH PASSWORD = 'Test1234=', DEFAULT_DATABASE = demo_pdo, CHECK_POLICY = OFF;
+
+
+GO
+USE demo_pdo;
+
+
+GO
+CREATE USER demo_user FOR LOGIN demo_user;
+
+
+GO
+-- Droits minimaux : lecture + écriture sur les données.
+-- On évite db_owner, qui donnerait tous les droits (dont DROP TABLE).
+ALTER ROLE db_datareader ADD MEMBER demo_user;
+
+ALTER ROLE db_datawriter ADD MEMBER demo_user;
+
+
+GO
+
+/*
+   1. USERS
+ */
 
 CREATE TABLE dbo.users (
     id_user INT IDENTITY(1,1) NOT NULL,
@@ -40,10 +72,9 @@ CREATE TABLE dbo.users (
 );
 GO
 
-
-/* 
-   3. USER PREFERENCES
-   */
+/*
+   2. USER PREFERENCES
+*/
 
 CREATE TABLE dbo.user_preferences (
     id_preference INT IDENTITY(1,1) NOT NULL,
@@ -54,29 +85,21 @@ CREATE TABLE dbo.user_preferences (
     max_cooking_time INT NULL,
 
     CONSTRAINT PK_user_preferences PRIMARY KEY (id_preference),
-
     CONSTRAINT UQ_user_preferences_user UNIQUE (user_id),
-
-    CONSTRAINT CK_user_preferences_budget
-        CHECK (budget > 0),
-
-    CONSTRAINT CK_user_preferences_people
-        CHECK (number_of_people > 0),
-
+    CONSTRAINT CK_user_preferences_budget CHECK (budget > 0),
+    CONSTRAINT CK_user_preferences_people CHECK (number_of_people > 0),
     CONSTRAINT CK_user_preferences_period
         CHECK (budget_period IN ('weekly', 'monthly')),
-
-    CONSTRAINT FK_user_preferences_users
-        FOREIGN KEY (user_id)
-        REFERENCES dbo.users(id_user)
-        ON DELETE CASCADE
+    CONSTRAINT CK_user_preferences_time
+        CHECK (max_cooking_time > 0 OR max_cooking_time IS NULL),
+    CONSTRAINT FK_user_preferences_users FOREIGN KEY (user_id)
+        REFERENCES dbo.users(id_user) ON DELETE CASCADE
 );
 GO
 
-
-/* 
-   4. DIETARY CATEGORIES
-   */
+/*
+   3. DIETARY CATEGORIES
+*/
 
 CREATE TABLE dbo.dietary_categories (
     id_category INT IDENTITY(1,1) NOT NULL,
@@ -88,11 +111,6 @@ CREATE TABLE dbo.dietary_categories (
 );
 GO
 
-
-/* 
-   5. USER DIETARY CATEGORIES
-   */
-
 CREATE TABLE dbo.user_dietary_categories (
     user_id INT NOT NULL,
     category_id INT NOT NULL,
@@ -100,22 +118,17 @@ CREATE TABLE dbo.user_dietary_categories (
     CONSTRAINT PK_user_dietary_categories
         PRIMARY KEY (user_id, category_id),
 
-    CONSTRAINT FK_user_categories_users
-        FOREIGN KEY (user_id)
-        REFERENCES dbo.users(id_user)
-        ON DELETE CASCADE,
+    CONSTRAINT FK_user_categories_users FOREIGN KEY (user_id)
+        REFERENCES dbo.users(id_user) ON DELETE CASCADE,
 
-    CONSTRAINT FK_user_categories_categories
-        FOREIGN KEY (category_id)
-        REFERENCES dbo.dietary_categories(id_category)
-        ON DELETE CASCADE
+    CONSTRAINT FK_user_categories_categories FOREIGN KEY (category_id)
+        REFERENCES dbo.dietary_categories(id_category) ON DELETE CASCADE
 );
 GO
 
-
-/* 
-   6. ALLERGIES
-    */
+/*
+   4. ALLERGIES
+ */
 
 CREATE TABLE dbo.allergies (
     id_allergy INT IDENTITY(1,1) NOT NULL,
@@ -126,11 +139,6 @@ CREATE TABLE dbo.allergies (
 );
 GO
 
-
-/* 
-   7. USER ALLERGIES
-   */
-
 CREATE TABLE dbo.user_allergies (
     user_id INT NOT NULL,
     allergy_id INT NOT NULL,
@@ -138,22 +146,17 @@ CREATE TABLE dbo.user_allergies (
     CONSTRAINT PK_user_allergies
         PRIMARY KEY (user_id, allergy_id),
 
-    CONSTRAINT FK_user_allergies_users
-        FOREIGN KEY (user_id)
-        REFERENCES dbo.users(id_user)
-        ON DELETE CASCADE,
+    CONSTRAINT FK_user_allergies_users FOREIGN KEY (user_id)
+        REFERENCES dbo.users(id_user) ON DELETE CASCADE,
 
-    CONSTRAINT FK_user_allergies_allergies
-        FOREIGN KEY (allergy_id)
-        REFERENCES dbo.allergies(id_allergy)
-        ON DELETE CASCADE
+    CONSTRAINT FK_user_allergies_allergies FOREIGN KEY (allergy_id)
+        REFERENCES dbo.allergies(id_allergy) ON DELETE CASCADE
 );
 GO
 
-
-/* 
-   8. APPLIANCES
-   */
+/*
+   5. APPLIANCES
+*/
 
 CREATE TABLE dbo.appliances (
     id_appliance INT IDENTITY(1,1) NOT NULL,
@@ -164,11 +167,6 @@ CREATE TABLE dbo.appliances (
 );
 GO
 
-
-/* 
-   9. USER APPLIANCES
-    */
-
 CREATE TABLE dbo.user_appliances (
     user_id INT NOT NULL,
     appliance_id INT NOT NULL,
@@ -176,25 +174,20 @@ CREATE TABLE dbo.user_appliances (
     CONSTRAINT PK_user_appliances
         PRIMARY KEY (user_id, appliance_id),
 
-    CONSTRAINT FK_user_appliances_users
-        FOREIGN KEY (user_id)
-        REFERENCES dbo.users(id_user)
-        ON DELETE CASCADE,
+    CONSTRAINT FK_user_appliances_users FOREIGN KEY (user_id)
+        REFERENCES dbo.users(id_user) ON DELETE CASCADE,
 
-    CONSTRAINT FK_user_appliances_appliances
-        FOREIGN KEY (appliance_id)
-        REFERENCES dbo.appliances(id_appliance)
-        ON DELETE CASCADE
+    CONSTRAINT FK_user_appliances_appliances FOREIGN KEY (appliance_id)
+        REFERENCES dbo.appliances(id_appliance) ON DELETE CASCADE
 );
 GO
 
-
-/* 
-   10. RECIPES
-    */
+/*
+   6. RECIPES
+*/
 
 CREATE TABLE dbo.recipes (
-    id_recipe INT IDENTITY(1,1) NOT NULL,
+    id_recipe VARCHAR(10) NOT NULL,
     name NVARCHAR(150) NOT NULL,
     description NVARCHAR(MAX) NULL,
     instructions NVARCHAR(MAX) NOT NULL,
@@ -205,25 +198,19 @@ CREATE TABLE dbo.recipes (
     image NVARCHAR(255) NULL,
 
     CONSTRAINT PK_recipes PRIMARY KEY (id_recipe),
-
-    CONSTRAINT CK_recipes_cost
-        CHECK (estimated_cost >= 0),
-
-    CONSTRAINT CK_recipes_servings
-        CHECK (servings > 0),
-
+    CONSTRAINT UQ_recipes_name UNIQUE (name),
+    CONSTRAINT CK_recipes_cost CHECK (estimated_cost >= 0),
+    CONSTRAINT CK_recipes_servings CHECK (servings > 0),
     CONSTRAINT CK_recipes_preparation_time
         CHECK (preparation_time >= 0 OR preparation_time IS NULL),
-
     CONSTRAINT CK_recipes_cooking_time
         CHECK (cooking_time >= 0 OR cooking_time IS NULL)
 );
 GO
 
-
-/* 
-   11. INGREDIENTS
-   */
+/*
+   7. INGREDIENTS
+ */
 
 CREATE TABLE dbo.ingredients (
     id_ingredient INT IDENTITY(1,1) NOT NULL,
@@ -234,13 +221,12 @@ CREATE TABLE dbo.ingredients (
 );
 GO
 
-
-/* 
-   12. RECIPE INGREDIENTS
-   */
+/*
+   8. RECIPE INGREDIENTS
+ */
 
 CREATE TABLE dbo.recipe_ingredients (
-    recipe_id INT NOT NULL,
+    recipe_id VARCHAR(10) NOT NULL,
     ingredient_id INT NOT NULL,
     quantity DECIMAL(10,2) NULL,
     unit NVARCHAR(30) NULL,
@@ -251,119 +237,95 @@ CREATE TABLE dbo.recipe_ingredients (
     CONSTRAINT CK_recipe_ingredients_quantity
         CHECK (quantity >= 0 OR quantity IS NULL),
 
-    CONSTRAINT FK_recipe_ingredients_recipes
-        FOREIGN KEY (recipe_id)
-        REFERENCES dbo.recipes(id_recipe)
-        ON DELETE CASCADE,
+    CONSTRAINT FK_recipe_ingredients_recipes FOREIGN KEY (recipe_id)
+        REFERENCES dbo.recipes(id_recipe) ON DELETE CASCADE,
 
-    CONSTRAINT FK_recipe_ingredients_ingredients
-        FOREIGN KEY (ingredient_id)
-        REFERENCES dbo.ingredients(id_ingredient)
-        ON DELETE CASCADE
+    CONSTRAINT FK_recipe_ingredients_ingredients FOREIGN KEY (ingredient_id)
+        REFERENCES dbo.ingredients(id_ingredient) ON DELETE CASCADE
 );
 GO
 
-
 /* 
-   13. RECIPE CATEGORIES
-  */
+   9. RECIPE CATEGORIES
+ */
 
 CREATE TABLE dbo.recipe_categories (
-    recipe_id INT NOT NULL,
+    recipe_id VARCHAR(10) NOT NULL,
     category_id INT NOT NULL,
 
     CONSTRAINT PK_recipe_categories
         PRIMARY KEY (recipe_id, category_id),
 
-    CONSTRAINT FK_recipe_categories_recipes
-        FOREIGN KEY (recipe_id)
-        REFERENCES dbo.recipes(id_recipe)
-        ON DELETE CASCADE,
+    CONSTRAINT FK_recipe_categories_recipes FOREIGN KEY (recipe_id)
+        REFERENCES dbo.recipes(id_recipe) ON DELETE CASCADE,
 
-    CONSTRAINT FK_recipe_categories_categories
-        FOREIGN KEY (category_id)
-        REFERENCES dbo.dietary_categories(id_category)
-        ON DELETE CASCADE
+    CONSTRAINT FK_recipe_categories_categories FOREIGN KEY (category_id)
+        REFERENCES dbo.dietary_categories(id_category) ON DELETE CASCADE
 );
 GO
 
-
 /* 
-   14. RECIPE APPLIANCES
+   10. RECIPE APPLIANCES
    */
 
 CREATE TABLE dbo.recipe_appliances (
-    recipe_id INT NOT NULL,
+    recipe_id VARCHAR(10) NOT NULL,
     appliance_id INT NOT NULL,
 
     CONSTRAINT PK_recipe_appliances
         PRIMARY KEY (recipe_id, appliance_id),
 
-    CONSTRAINT FK_recipe_appliances_recipes
-        FOREIGN KEY (recipe_id)
-        REFERENCES dbo.recipes(id_recipe)
-        ON DELETE CASCADE,
+    CONSTRAINT FK_recipe_appliances_recipes FOREIGN KEY (recipe_id)
+        REFERENCES dbo.recipes(id_recipe) ON DELETE CASCADE,
 
-    CONSTRAINT FK_recipe_appliances_appliances
-        FOREIGN KEY (appliance_id)
-        REFERENCES dbo.appliances(id_appliance)
-        ON DELETE CASCADE
+    CONSTRAINT FK_recipe_appliances_appliances FOREIGN KEY (appliance_id)
+        REFERENCES dbo.appliances(id_appliance) ON DELETE CASCADE
 );
 GO
 
-
-/* 
-   15. RECIPE ALLERGIES
+/*
+   11. RECIPE ALLERGIES
    */
 
 CREATE TABLE dbo.recipe_allergies (
-    recipe_id INT NOT NULL,
+    recipe_id VARCHAR(10) NOT NULL,
     allergy_id INT NOT NULL,
 
     CONSTRAINT PK_recipe_allergies
         PRIMARY KEY (recipe_id, allergy_id),
 
-    CONSTRAINT FK_recipe_allergies_recipes
-        FOREIGN KEY (recipe_id)
-        REFERENCES dbo.recipes(id_recipe)
-        ON DELETE CASCADE,
+    CONSTRAINT FK_recipe_allergies_recipes FOREIGN KEY (recipe_id)
+        REFERENCES dbo.recipes(id_recipe) ON DELETE CASCADE,
 
-    CONSTRAINT FK_recipe_allergies_allergies
-        FOREIGN KEY (allergy_id)
-        REFERENCES dbo.allergies(id_allergy)
-        ON DELETE CASCADE
+    CONSTRAINT FK_recipe_allergies_allergies FOREIGN KEY (allergy_id)
+        REFERENCES dbo.allergies(id_allergy) ON DELETE CASCADE
 );
 GO
 
-
 /* 
-   16. SAVED RECIPES
-    */
+   12. SAVED RECIPES
+   */
 
 CREATE TABLE dbo.saved_recipes (
     user_id INT NOT NULL,
-    recipe_id INT NOT NULL,
+    recipe_id VARCHAR(10) NOT NULL,
     saved_at DATETIME2 DEFAULT SYSDATETIME(),
 
     CONSTRAINT PK_saved_recipes
         PRIMARY KEY (user_id, recipe_id),
 
-    CONSTRAINT FK_saved_recipes_users
-        FOREIGN KEY (user_id)
-        REFERENCES dbo.users(id_user)
-        ON DELETE CASCADE,
+    CONSTRAINT FK_saved_recipes_users FOREIGN KEY (user_id)
+        REFERENCES dbo.users(id_user) ON DELETE CASCADE,
 
-    CONSTRAINT FK_saved_recipes_recipes
-        FOREIGN KEY (recipe_id)
-        REFERENCES dbo.recipes(id_recipe)
-        ON DELETE CASCADE
+    CONSTRAINT FK_saved_recipes_recipes FOREIGN KEY (recipe_id)
+        REFERENCES dbo.recipes(id_recipe) ON DELETE CASCADE
 );
 GO
 
-
 /* 
-   17. FOOD BANKS
-   */
+
+   13. FOOD BANKS
+  */
 
 CREATE TABLE dbo.food_banks (
     id_food_bank INT IDENTITY(1,1) NOT NULL,
@@ -386,60 +348,80 @@ CREATE TABLE dbo.food_banks (
 );
 GO
 
+/*
+   14. INDEXES
+ */
 
-/* 
-   18. INITIAL DIETARY CATEGORIES
-    */
+CREATE INDEX IX_user_categories_category_id
+ON dbo.user_dietary_categories(category_id);
+
+CREATE INDEX IX_user_allergies_allergy_id
+ON dbo.user_allergies(allergy_id);
+
+CREATE INDEX IX_user_appliances_appliance_id
+ON dbo.user_appliances(appliance_id);
+
+CREATE INDEX IX_recipe_categories_category_id
+ON dbo.recipe_categories(category_id);
+
+CREATE INDEX IX_recipe_ingredients_ingredient_id
+ON dbo.recipe_ingredients(ingredient_id);
+
+CREATE INDEX IX_recipe_appliances_appliance_id
+ON dbo.recipe_appliances(appliance_id);
+
+CREATE INDEX IX_recipe_allergies_allergy_id
+ON dbo.recipe_allergies(allergy_id);
+
+CREATE INDEX IX_food_banks_city
+ON dbo.food_banks(city);
+GO
+
+/*
+   15. SEED DATA
+  */
+
+/* Dietary categories */
 
 INSERT INTO dbo.dietary_categories (name, description)
 VALUES
-(N'Vegan', N'No animal products'),
-(N'Vegetarian', N'No meat or fish'),
-(N'Lactose-free', N'No lactose'),
-(N'Gluten-free', N'No gluten'),
-(N'Pescatarian', N'Fish and seafood allowed, no meat'),
-(N'Regular', N'No specific dietary restrictions');
+('Vegan', 'No animal products'),
+('Vegetarian', 'No meat or fish'),
+('Lactose-free', 'No lactose'),
+('Gluten-free', 'No gluten'),
+('Pescatarian', 'Fish and seafood allowed, no meat'),
+('Regular', 'No specific dietary restrictions');
 GO
 
+/* Appliances */
 
-/* 
-   19. INITIAL APPLIANCES
-    */
-
-INSERT INTO dbo.appliances (
-    name
-    )
+INSERT INTO dbo.appliances (name)
 VALUES
-(N'Oven'),
-(N'Microwave'),
-(N'Stovetop'),
-(N'Air fryer'),
-(N'Blender'),
-(N'Food processor'),
-(N'Rice cooker');
+('Oven'),
+('Microwave'),
+('Stovetop'),
+('Air fryer'),
+('Blender'),
+('Food processor'),
+('Rice cooker');
 GO
 
+/* Allergies */
 
-/* 
-   20. INITIAL ALLERGIES
-    */
-
-INSERT INTO dbo.allergies (
-    name
-    )
+INSERT INTO dbo.allergies (name)
 VALUES
-(N'Peanuts'),
-(N'Tree nuts'),
-(N'Milk'),
-(N'Eggs'),
-(N'Soy'),
-(N'Fish'),
-(N'Shellfish'),
-(N'Wheat'),
-(N'Sesame');
+('Peanuts'),
+('Tree nuts'),
+('Milk'),
+('Eggs'),
+('Soy'),
+('Fish'),
+('Shellfish'),
+('Wheat'),
+('Sesame');
 GO
 
-INSERT INTO dbo.recipe (
+INSERT INTO dbo.recipes (
     id_recipe,
     name,
     description,
@@ -447,279 +429,574 @@ INSERT INTO dbo.recipe (
     preparation_time,
     cooking_time,
     estimated_cost,
-    serving,
+    servings,
     image
 )
 VALUES
--- VEGAN
 ('R001', 'Chickpea Coconut Curry',
- 'A creamy vegan curry made with chickpeas, coconut milk and fragrant spices.',
- '1. Chop the onion and garlic. 2. Fry them in oil with curry powder. 3. Add chickpeas, coconut milk and chopped tomatoes. 4. Simmer for 20 minutes. 5. Serve with cooked rice.',
- 10, 20, 5.50, 2, 'images/recipes/chickpea-coconut-curry.jpg'),
+ 'A creamy vegan curry made with chickpeas, coconut milk and spices.',
+ 'Chop the onion and tomatoes. Cook the onion with garlic and curry powder. Add chickpeas, tomatoes and coconut milk. Simmer for 15 minutes. Serve with cooked rice.',
+ 10, 20, 2.80, 1, NULL),
 
 ('R002', 'Lentil Bolognese',
- 'A plant-based alternative to traditional Bolognese made with lentils and tomato sauce.',
- '1. Chop the onion, carrot and garlic. 2. Fry the vegetables in olive oil. 3. Add lentils, tomato sauce and vegetable stock. 4. Simmer until the lentils are tender. 5. Serve with cooked spaghetti.',
- 15, 30, 4.80, 2, 'images/recipes/lentil-bolognese.jpg'),
+ 'A plant-based alternative to traditional Bolognese sauce.',
+ 'Cook the lentils. Chop the onion and carrot. Cook the vegetables with garlic, then add tomato sauce and lentils. Simmer for 20 minutes. Serve with cooked spaghetti.',
+ 15, 25, 2.20, 1, NULL),
 
 ('R003', 'Tofu Vegetable Stir-Fry',
- 'A colourful stir-fry with crispy tofu and fresh vegetables.',
- '1. Cut the tofu into cubes. 2. Chop the vegetables. 3. Fry the tofu until golden. 4. Add the vegetables and garlic. 5. Add gluten-free tamari and cook for 5 minutes. 6. Serve with rice.',
- 15, 15, 6.50, 2, 'images/recipes/tofu-vegetable-stir-fry.jpg'),
+ 'A quick vegan stir-fry with tofu and fresh vegetables.',
+ 'Cut the tofu and vegetables into pieces. Cook the tofu in a pan. Add broccoli, carrots and soy sauce. Cook until the vegetables are tender. Serve with rice.',
+ 10, 15, 2.90, 1, NULL),
 
 ('R004', 'Sweet Potato and Black Bean Bowl',
- 'A nourishing bowl with roasted sweet potatoes, black beans and fresh vegetables.',
- '1. Peel and cube the sweet potatoes. 2. Season with olive oil, paprika, salt and pepper. 3. Roast at 200 degrees Celsius for 25 minutes. 4. Warm the black beans. 5. Serve with lettuce, tomatoes and sweet potatoes.',
- 10, 25, 5.20, 2, 'images/recipes/sweet-potato-black-bean-bowl.jpg'),
+ 'A colourful bowl with roasted sweet potatoes and black beans.',
+ 'Cut the sweet potato into cubes and roast until tender. Heat the black beans. Prepare the rice. Serve everything in a bowl with lettuce and olive oil.',
+ 10, 25, 2.50, 1, NULL),
 
 ('R005', 'Red Lentil Soup',
- 'A comforting soup made with red lentils, carrots and aromatic spices.',
- '1. Chop the onion, carrots and garlic. 2. Fry in olive oil. 3. Add red lentils, vegetable stock and cumin. 4. Simmer for 25 minutes. 5. Blend until smooth or leave slightly chunky.',
- 10, 25, 3.80, 2, 'images/recipes/red-lentil-soup.jpg'),
+ 'A comforting soup made with red lentils and vegetables.',
+ 'Chop the onion and carrot. Cook them with garlic. Add red lentils and vegetable stock. Simmer until the lentils are soft. Blend the soup if desired.',
+ 10, 25, 1.80, 1, NULL),
 
 ('R006', 'Falafel Pita',
- 'Homemade chickpea falafel served with fresh vegetables and tahini sauce.',
- '1. Blend chickpeas, onion, garlic, parsley and cumin. 2. Shape into small balls. 3. Fry until golden and cooked through. 4. Prepare the tahini sauce with lemon juice and water. 5. Fill pita bread with falafel, lettuce and tomatoes.',
- 20, 15, 5.50, 2, 'images/recipes/falafel-pita.jpg'),
+ 'A vegan pita sandwich filled with falafel and fresh vegetables.',
+ 'Mash the chickpeas with garlic and parsley. Add flour and spices. Shape into small balls and cook in a pan. Serve inside pita bread with lettuce and tahini.',
+ 15, 15, 2.60, 1, NULL),
 
 ('R007', 'Stuffed Bell Peppers',
- 'Bell peppers filled with rice, vegetables, tomatoes and herbs.',
- '1. Cook the rice. 2. Cut the tops off the peppers and remove the seeds. 3. Fry onion, garlic and chopped tomatoes. 4. Mix with rice and herbs. 5. Fill the peppers. 6. Bake at 180 degrees Celsius for 30 minutes.',
- 15, 30, 5.00, 2, 'images/recipes/stuffed-bell-peppers.jpg'),
+ 'Bell peppers filled with rice, beans and vegetables.',
+ 'Cut the top of the bell pepper and remove the seeds. Mix cooked rice with black beans, tomatoes and onion. Fill the pepper and bake until tender.',
+ 15, 30, 2.40, 1, NULL),
 
--- VEGETARIAN
 ('R008', 'Spinach and Ricotta Lasagna',
- 'A delicious vegetarian lasagna layered with spinach, ricotta and tomato sauce.',
- '1. Cook the spinach and mix with ricotta. 2. Prepare the tomato sauce. 3. Layer lasagna sheets, spinach mixture and tomato sauce. 4. Add grated cheese. 5. Bake at 180 degrees Celsius for 35 minutes.',
- 20, 35, 7.50, 2, 'images/recipes/spinach-ricotta-lasagna.jpg'),
+ 'A vegetarian lasagna with spinach, ricotta and tomato sauce.',
+ 'Cook the spinach. Mix it with ricotta. Layer lasagna sheets, spinach mixture and tomato sauce in a baking dish. Add mozzarella and bake until golden.',
+ 15, 35, 3.50, 1, NULL),
 
 ('R009', 'Creamy Mushroom Risotto',
- 'A creamy Italian rice dish with mushrooms, vegetable stock and Parmesan.',
- '1. Chop the onion and mushrooms. 2. Fry in butter. 3. Add Arborio rice and stir. 4. Gradually add warm vegetable stock while stirring. 5. Cook until the rice is tender. 6. Finish with Parmesan.',
- 10, 25, 6.00, 2, 'images/recipes/mushroom-risotto.jpg'),
+ 'A creamy Italian risotto with mushrooms and Parmesan.',
+ 'Cook the onion and mushrooms in olive oil. Add Arborio rice. Gradually add vegetable stock while stirring. Finish with cream and Parmesan.',
+ 10, 25, 3.20, 1, NULL),
 
 ('R010', 'Vegetable Quiche',
- 'A savoury tart filled with eggs, cream and seasonal vegetables.',
- '1. Place the pastry in a tart dish. 2. Chop and lightly cook the vegetables. 3. Beat eggs with cream, salt and pepper. 4. Add the vegetables and grated cheese. 5. Pour into the pastry. 6. Bake at 180 degrees Celsius for 35 minutes.',
- 15, 35, 6.50, 2, 'images/recipes/vegetable-quiche.jpg'),
+ 'A savoury vegetarian quiche with vegetables and cheese.',
+ 'Place the shortcrust pastry in a baking dish. Whisk eggs with cream. Add spinach, zucchini and grated cheese. Pour the mixture over the pastry and bake until set.',
+ 15, 35, 3.00, 1, NULL),
 
 ('R011', 'Pesto Mozzarella Pasta',
- 'A quick pasta dish with basil pesto, mozzarella and cherry tomatoes.',
- '1. Cook the pasta in salted water. 2. Halve the cherry tomatoes. 3. Drain the pasta and mix with pesto. 4. Add mozzarella and tomatoes. 5. Season and serve.',
- 10, 15, 5.80, 2, 'images/recipes/pesto-mozzarella-pasta.jpg'),
+ 'A simple pasta dish with basil pesto and mozzarella.',
+ 'Cook the pasta. Drain and mix with basil pesto. Add cherry tomatoes and mozzarella. Mix well and serve.',
+ 5, 15, 2.70, 1, NULL),
 
 ('R012', 'Sweet Potato and Feta Salad',
- 'A fresh salad combining roasted sweet potatoes, feta cheese and leafy greens.',
- '1. Peel and cube the sweet potatoes. 2. Season with olive oil and roast at 200 degrees Celsius for 25 minutes. 3. Wash the salad leaves. 4. Add the sweet potatoes, crumbled feta and walnuts. 5. Dress with olive oil and lemon juice.',
- 10, 25, 5.80, 2, 'images/recipes/sweet-potato-feta-salad.jpg'),
+ 'A fresh vegetarian salad with sweet potato, feta and walnuts.',
+ 'Cut the sweet potato into cubes and roast until tender. Mix with lettuce, feta and walnuts. Add olive oil and lemon juice.',
+ 10, 25, 3.00, 1, NULL),
 
 ('R013', 'Classic Shakshuka',
- 'Eggs cooked in a rich tomato and pepper sauce with aromatic spices.',
- '1. Chop the onion, garlic and pepper. 2. Fry in olive oil. 3. Add chopped tomatoes, paprika and cumin. 4. Simmer for 10 minutes. 5. Make small wells and add the eggs. 6. Cover until the eggs are cooked.',
- 10, 20, 4.50, 2, 'images/recipes/classic-shakshuka.jpg'),
+ 'Eggs cooked in a flavourful tomato and pepper sauce.',
+ 'Cook the onion and bell pepper in olive oil. Add tomatoes and spices. Simmer until the sauce thickens. Make small spaces and crack the eggs into them. Cook until set.',
+ 10, 20, 2.20, 1, NULL),
 
 ('R014', 'Spinach and Cheese Stuffed Shells',
- 'Pasta shells filled with spinach and ricotta, baked in tomato sauce.',
- '1. Cook the pasta shells until slightly firm. 2. Mix spinach, ricotta and Parmesan. 3. Fill each shell with the mixture. 4. Place in a baking dish with tomato sauce. 5. Bake at 180 degrees Celsius for 25 minutes.',
- 20, 25, 7.00, 2, 'images/recipes/spinach-cheese-stuffed-shells.jpg'),
+ 'Pasta shells filled with spinach and ricotta cheese.',
+ 'Cook the pasta shells. Mix cooked spinach with ricotta. Fill each shell with the mixture. Cover with tomato sauce and mozzarella. Bake until golden.',
+ 15, 25, 3.40, 1, NULL),
 
--- LACTOSE-FREE
 ('R015', 'Lemon Garlic Chicken and Rice',
- 'Tender chicken cooked with garlic and lemon, served with fluffy rice.',
- '1. Season the chicken with lemon juice, garlic, salt and pepper. 2. Heat olive oil in a pan. 3. Cook the chicken until golden and fully cooked. 4. Cook the rice separately. 5. Serve together with fresh parsley.',
- 10, 25, 6.50, 2, 'images/recipes/lemon-garlic-chicken-rice.jpg'),
+ 'Chicken breast served with lemon, garlic and rice.',
+ 'Season the chicken with lemon juice, garlic and olive oil. Cook in a pan until fully cooked. Prepare the rice and serve with the chicken.',
+ 10, 20, 3.50, 1, NULL),
 
 ('R016', 'Baked Salmon and Potatoes',
- 'Oven-baked salmon served with seasoned potatoes and lemon.',
- '1. Cut the potatoes into wedges. 2. Season with olive oil, salt and pepper. 3. Bake at 200 degrees Celsius for 20 minutes. 4. Add the salmon with lemon and herbs. 5. Bake for another 12 to 15 minutes until cooked.',
- 10, 35, 9.50, 2, 'images/recipes/baked-salmon-potatoes.jpg'),
+ 'Oven-baked salmon served with roasted potatoes.',
+ 'Cut the potatoes into pieces. Season with olive oil and parsley. Bake until nearly tender. Add the salmon with lemon juice and bake until cooked through.',
+ 10, 30, 4.80, 1, NULL),
 
 ('R017', 'Chicken Coconut Curry',
- 'A mild chicken curry prepared with coconut milk, tomatoes and spices.',
- '1. Cut the chicken into pieces. 2. Fry onion and garlic in oil. 3. Add curry powder and chicken. 4. Add coconut milk and chopped tomatoes. 5. Simmer until the chicken is fully cooked. 6. Serve with rice.',
- 10, 25, 7.00, 2, 'images/recipes/chicken-coconut-curry.jpg'),
+ 'Chicken cooked in a creamy coconut curry sauce.',
+ 'Cut the chicken into pieces. Cook the onion and garlic. Add chicken and curry powder. Pour in coconut milk and simmer until the chicken is fully cooked. Serve with rice.',
+ 10, 25, 3.80, 1, NULL),
 
 ('R018', 'Beef and Vegetable Tacos',
- 'Soft tacos filled with seasoned beef, peppers and fresh vegetables.',
- '1. Chop the onion and peppers. 2. Fry the beef with taco seasoning. 3. Add the vegetables and cook until tender. 4. Warm the corn tortillas. 5. Fill with beef, lettuce and tomatoes.',
- 15, 15, 7.50, 2, 'images/recipes/beef-vegetable-tacos.jpg'),
+ 'Tacos filled with seasoned beef and fresh vegetables.',
+ 'Cook the minced beef with onion and spices. Warm the corn tortillas. Add the beef, tomatoes and lettuce. Serve immediately.',
+ 10, 15, 3.50, 1, NULL),
 
 ('R019', 'Roasted Vegetable Quinoa Bowl',
- 'A colourful bowl of quinoa topped with roasted vegetables and lemon dressing.',
- '1. Rinse and cook the quinoa. 2. Chop the vegetables. 3. Season with olive oil, salt and pepper. 4. Roast at 200 degrees Celsius for 20 to 25 minutes. 5. Serve over quinoa with lemon dressing.',
- 15, 25, 5.80, 2, 'images/recipes/roasted-vegetable-quinoa-bowl.jpg'),
+ 'A healthy bowl with quinoa and roasted vegetables.',
+ 'Cook the quinoa. Cut the zucchini and bell pepper into pieces. Roast the vegetables with olive oil. Serve over quinoa with lemon juice.',
+ 10, 25, 2.80, 1, NULL),
 
 ('R020', 'Tomato Basil Chicken Pasta',
- 'Pasta with chicken, fresh tomatoes, basil and a light olive oil sauce.',
- '1. Cook the pasta. 2. Cut the chicken into small pieces. 3. Fry the chicken with garlic until fully cooked. 4. Add chopped tomatoes and basil. 5. Simmer for 5 minutes. 6. Mix with the pasta.',
- 10, 20, 6.80, 2, 'images/recipes/tomato-basil-chicken-pasta.jpg'),
+ 'Pasta with chicken, tomatoes and fresh basil.',
+ 'Cook the pasta. Cut and cook the chicken in a pan. Add cherry tomatoes and tomato sauce. Mix with the pasta and fresh basil.',
+ 10, 20, 3.40, 1, NULL),
 
 ('R021', 'Garlic Shrimp Rice Bowl',
- 'Juicy garlic shrimp served over rice with fresh vegetables.',
- '1. Cook the rice. 2. Chop the garlic and vegetables. 3. Fry the shrimp in olive oil with garlic until fully cooked. 4. Add lemon juice and seasoning. 5. Serve over rice with vegetables.',
- 10, 15, 8.00, 2, 'images/recipes/garlic-shrimp-rice-bowl.jpg'),
+ 'A rice bowl with garlic shrimp and fresh vegetables.',
+ 'Cook the rice. Cook the shrimp with garlic and olive oil until fully cooked. Add vegetables and serve over rice.',
+ 10, 15, 3.90, 1, NULL),
 
--- GLUTEN-FREE
 ('R022', 'Chicken and Vegetable Rice Bowl',
- 'A balanced rice bowl with chicken and colourful vegetables.',
- '1. Cook the rice. 2. Cut the chicken and vegetables into pieces. 3. Fry the chicken until fully cooked. 4. Add the vegetables and cook until tender. 5. Season with gluten-free tamari and serve over rice.',
- 15, 20, 6.50, 2, 'images/recipes/chicken-vegetable-rice-bowl.jpg'),
+ 'A gluten-free rice bowl with chicken and vegetables.',
+ 'Cook the rice. Cut the chicken and vegetables into pieces. Cook the chicken thoroughly, then add the vegetables. Season and serve with rice.',
+ 10, 20, 3.50, 1, NULL),
 
 ('R023', 'Stuffed Zucchini Boats',
- 'Baked zucchini halves filled with minced meat, tomatoes and herbs.',
- '1. Halve the zucchini lengthwise and scoop out the centre. 2. Fry the minced meat with onion and garlic. 3. Add chopped tomatoes and herbs. 4. Fill the zucchini halves. 5. Bake at 190 degrees Celsius for 25 minutes.',
- 15, 25, 6.50, 2, 'images/recipes/stuffed-zucchini-boats.jpg'),
+ 'Zucchini halves filled with beef, tomatoes and vegetables.',
+ 'Cut the zucchini in half and remove some of the centre. Cook minced beef with onion and tomatoes. Fill the zucchini and bake until tender.',
+ 15, 30, 3.20, 1, NULL),
 
 ('R024', 'Shrimp Rice Noodle Stir-Fry',
- 'Rice noodles tossed with shrimp, vegetables and a light gluten-free sauce.',
- '1. Prepare the rice noodles according to the package. 2. Chop the vegetables. 3. Fry the shrimp until fully cooked. 4. Add the vegetables and garlic. 5. Add noodles and gluten-free tamari. 6. Toss and serve.',
- 15, 15, 8.00, 2, 'images/recipes/shrimp-rice-noodle-stir-fry.jpg'),
+ 'Rice noodles stir-fried with shrimp and vegetables.',
+ 'Prepare the rice noodles. Cook the shrimp with garlic. Add carrots and vegetables. Add the noodles and gluten-free soy sauce. Stir-fry briefly.',
+ 10, 15, 3.80, 1, NULL),
 
 ('R025', 'Sweet Potato and Bean Chili',
- 'A hearty chili made with sweet potatoes, beans, tomatoes and spices.',
- '1. Peel and cube the sweet potato. 2. Fry onion and garlic. 3. Add sweet potato, beans, tomatoes and chili powder. 4. Add vegetable stock. 5. Simmer until the sweet potato is tender.',
- 10, 30, 4.80, 2, 'images/recipes/sweet-potato-bean-chili.jpg'),
+ 'A hearty gluten-free chili with sweet potatoes and beans.',
+ 'Cut the sweet potato into cubes. Cook the onion and tomatoes. Add sweet potato, black beans and vegetable stock. Simmer until tender.',
+ 10, 30, 2.30, 1, NULL),
 
 ('R026', 'Chicken and Quinoa Skillet',
  'A one-pan meal with chicken, quinoa and vegetables.',
- '1. Cut the chicken into pieces. 2. Fry onion and chicken in olive oil. 3. Add rinsed quinoa, vegetables and gluten-free stock. 4. Cover and simmer until the quinoa is cooked and the chicken is fully cooked. 5. Season and serve.',
- 10, 25, 7.00, 2, 'images/recipes/chicken-quinoa-skillet.jpg'),
+ 'Cut the chicken into pieces. Cook with onion and bell pepper. Add quinoa and vegetable stock. Simmer until the quinoa is cooked and the chicken is fully cooked.',
+ 10, 25, 3.60, 1, NULL),
 
 ('R027', 'Tuna Stuffed Baked Potatoes',
- 'Baked potatoes filled with tuna, sweetcorn and a fresh lemon dressing.',
- '1. Wash and pierce the potatoes. 2. Bake at 200 degrees Celsius for 40 to 50 minutes until tender. 3. Mix drained tuna with sweetcorn, olive oil and lemon juice. 4. Cut open the potatoes and add the tuna mixture.',
- 10, 45, 5.50, 2, 'images/recipes/tuna-stuffed-baked-potatoes.jpg'),
+ 'Baked potatoes filled with tuna and fresh vegetables.',
+ 'Bake the potato until tender. Mix tuna with sweetcorn and olive oil. Cut the potato open and add the tuna mixture.',
+ 10, 35, 2.80, 1, NULL),
 
 ('R028', 'Garden Vegetable Omelette',
- 'A simple omelette filled with fresh vegetables and herbs.',
- '1. Chop the vegetables. 2. Fry them lightly in olive oil. 3. Beat the eggs with salt and pepper. 4. Pour the eggs over the vegetables. 5. Cook gently until set and fold the omelette.',
- 10, 10, 4.00, 2, 'images/recipes/garden-vegetable-omelette.jpg'),
+ 'A simple omelette with fresh vegetables.',
+ 'Beat the eggs. Chop the vegetables. Cook them briefly in a pan. Pour in the eggs and cook until the omelette is set.',
+ 5, 10, 1.80, 1, NULL),
 
--- PESCATARIAN
 ('R029', 'Salmon Teriyaki Bowl',
- 'A salmon bowl with rice, vegetables and a sweet teriyaki-style sauce.',
- '1. Cook the rice. 2. Mix gluten-free tamari, honey and ginger. 3. Cook the salmon in a pan until fully cooked. 4. Add the sauce and let it thicken. 5. Serve with rice and vegetables.',
- 10, 20, 9.50, 2, 'images/recipes/salmon-teriyaki-bowl.jpg'),
+ 'A salmon rice bowl with a sweet and savoury teriyaki sauce.',
+ 'Cook the rice. Season the salmon with teriyaki sauce and cook thoroughly. Serve with cucumber and rice.',
+ 10, 20, 4.50, 1, NULL),
 
 ('R030', 'Mediterranean Tuna Pasta',
- 'Pasta with tuna, tomatoes, olives and Mediterranean herbs.',
- '1. Cook the pasta. 2. Chop the tomatoes and olives. 3. Fry garlic in olive oil. 4. Add tomatoes, tuna and olives. 5. Simmer for 5 minutes. 6. Mix with the pasta and parsley.',
- 10, 15, 6.50, 2, 'images/recipes/mediterranean-tuna-pasta.jpg'),
+ 'Pasta with tuna, tomatoes and black olives.',
+ 'Cook the pasta. Drain the tuna. Mix the pasta with tuna, cherry tomatoes, black olives and olive oil. Season and serve.',
+ 5, 15, 2.90, 1, NULL),
 
 ('R031', 'Garlic Shrimp Spaghetti',
- 'Spaghetti tossed with garlic shrimp, olive oil and fresh parsley.',
- '1. Cook the spaghetti. 2. Fry garlic in olive oil. 3. Add shrimp and cook until fully cooked. 4. Add lemon juice and parsley. 5. Toss with the drained spaghetti and serve.',
- 10, 15, 8.00, 2, 'images/recipes/garlic-shrimp-spaghetti.jpg'),
+ 'Spaghetti with garlic shrimp and fresh parsley.',
+ 'Cook the spaghetti. Cook the shrimp with garlic and olive oil until fully cooked. Add parsley and mix with the spaghetti.',
+ 5, 15, 3.50, 1, NULL),
 
 ('R032', 'Baked Cod and Vegetables',
- 'Oven-baked cod served with seasonal vegetables and lemon.',
- '1. Chop the vegetables. 2. Place them in a baking dish with olive oil and herbs. 3. Bake at 190 degrees Celsius for 15 minutes. 4. Add the cod and lemon. 5. Bake for another 12 to 15 minutes until the fish is cooked.',
- 15, 30, 8.50, 2, 'images/recipes/baked-cod-vegetables.jpg'),
+ 'Oven-baked cod served with roasted vegetables.',
+ 'Cut the vegetables into pieces and roast with olive oil. Add the cod with lemon juice and parsley. Bake until the fish is cooked through.',
+ 10, 25, 4.20, 1, NULL),
 
 ('R033', 'Salmon and Avocado Sushi Bowl',
- 'A sushi-inspired bowl with rice, salmon, avocado and cucumber.',
- '1. Cook the sushi rice and season it with rice vinegar. 2. Cook the salmon thoroughly and let it cool slightly. 3. Slice the avocado and cucumber. 4. Arrange everything in bowls. 5. Add gluten-free tamari and sesame seeds.',
- 15, 20, 10.00, 2, 'images/recipes/salmon-avocado-sushi-bowl.jpg'),
+ 'A sushi-inspired bowl with salmon, avocado and cucumber.',
+ 'Cook the sushi rice and season with rice vinegar. Cook the salmon thoroughly and cut into pieces. Serve with avocado and cucumber.',
+ 15, 20, 4.80, 1, NULL),
 
 ('R034', 'Creamy Salmon Spinach Pasta',
- 'Pasta with salmon, spinach and a creamy lactose-free sauce.',
- '1. Cook the pasta. 2. Cut the salmon into pieces and cook in a pan. 3. Add spinach and lactose-free cream. 4. Simmer until the spinach softens and the salmon is cooked. 5. Mix with the pasta and season.',
- 10, 20, 9.00, 2, 'images/recipes/creamy-salmon-spinach-pasta.jpg'),
+ 'Pasta with salmon, spinach and lactose-free cream.',
+ 'Cook the pasta. Cook the salmon thoroughly. Add spinach and lactose-free cream. Simmer briefly and mix with the pasta.',
+ 10, 20, 4.20, 1, NULL),
 
 ('R035', 'Tuna and Chickpea Salad',
- 'A fresh protein-rich salad with tuna, chickpeas, tomatoes and lemon dressing.',
- '1. Drain the tuna and chickpeas. 2. Chop the tomatoes, cucumber and red onion. 3. Mix everything in a bowl. 4. Add olive oil, lemon juice, salt and pepper. 5. Toss and serve.',
- 15, 0, 5.80, 2, 'images/recipes/tuna-chickpea-salad.jpg'),
+ 'A fresh salad with tuna, chickpeas and vegetables.',
+ 'Drain the tuna and chickpeas. Mix with lettuce, tomatoes and red onion. Add lemon juice and olive oil.',
+ 10, 0, 2.80, 1, NULL),
 
--- REGULAR
 ('R036', 'Spaghetti Bolognese',
- 'A classic Italian-inspired pasta dish with minced beef and tomato sauce.',
- '1. Cook the spaghetti. 2. Chop the onion and garlic. 3. Brown the minced beef in a pan. 4. Add onion, garlic and tomato sauce. 5. Simmer for 20 minutes. 6. Serve with spaghetti.',
- 10, 25, 7.00, 2, 'images/recipes/spaghetti-bolognese.jpg'),
+ 'Classic spaghetti served with a rich beef and tomato sauce.',
+ 'Cook the spaghetti. Brown the minced beef with onion and carrot. Add tomato sauce and simmer. Serve over the spaghetti.',
+ 10, 25, 3.20, 1, NULL),
 
 ('R037', 'Creamy Chicken Mushroom Pasta',
- 'Pasta with chicken, mushrooms and a rich creamy sauce.',
- '1. Cook the pasta. 2. Cut the chicken into pieces. 3. Fry the chicken until fully cooked. 4. Add mushrooms and garlic. 5. Pour in cream and simmer. 6. Mix with the pasta.',
- 10, 20, 7.50, 2, 'images/recipes/creamy-chicken-mushroom-pasta.jpg'),
+ 'Pasta with chicken, mushrooms and creamy sauce.',
+ 'Cook the pasta. Cook the chicken and mushrooms in a pan. Add cream and season. Mix with the pasta and serve.',
+ 10, 20, 3.50, 1, NULL),
 
 ('R038', 'Classic Beef Burger',
- 'A homemade beef burger served in a bun with lettuce, tomato and sauce.',
- '1. Season the minced beef and shape into two patties. 2. Cook in a hot pan until fully cooked. 3. Toast the burger buns. 4. Add lettuce, tomato, cheese and sauce. 5. Assemble and serve.',
- 15, 15, 8.00, 2, 'images/recipes/classic-beef-burger.jpg'),
+ 'A homemade beef burger with cheese and fresh vegetables.',
+ 'Shape the minced beef into a patty and cook thoroughly. Toast the burger bun. Add cheddar, lettuce and tomato. Assemble the burger.',
+ 10, 15, 3.80, 1, NULL),
 
 ('R039', 'Chicken Fajitas',
- 'Chicken strips cooked with peppers and onions, served in warm tortillas.',
- '1. Slice the chicken, peppers and onion. 2. Season the chicken with fajita spices. 3. Fry the chicken until fully cooked. 4. Add peppers and onion. 5. Warm the tortillas and fill them with the mixture.',
- 15, 15, 7.00, 2, 'images/recipes/chicken-fajitas.jpg'),
+ 'Chicken strips cooked with peppers and fajita seasoning.',
+ 'Cut the chicken and peppers into strips. Cook the chicken thoroughly with fajita seasoning. Add the peppers and onion. Serve in warm tortillas.',
+ 10, 15, 3.40, 1, NULL),
 
 ('R040', 'Chicken Parmesan',
- 'Breaded chicken topped with tomato sauce and melted cheese.',
- '1. Flatten the chicken breasts. 2. Coat them in flour, beaten egg and breadcrumbs. 3. Fry until golden and fully cooked. 4. Add tomato sauce and mozzarella. 5. Bake until the cheese melts. 6. Serve with pasta or salad.',
- 15, 25, 8.50, 2, 'images/recipes/chicken-parmesan.jpg'),
+ 'Breaded chicken topped with tomato sauce and mozzarella.',
+ 'Coat the chicken in flour, egg and breadcrumbs. Cook until golden and fully cooked. Add tomato sauce and mozzarella. Bake until the cheese melts.',
+ 15, 25, 3.90, 1, NULL),
 
 ('R041', 'Classic Beef Lasagna',
- 'Layers of pasta, minced beef, tomato sauce and creamy béchamel.',
- '1. Brown the minced beef with onion and garlic. 2. Add tomato sauce and simmer. 3. Prepare the béchamel sauce. 4. Layer pasta sheets, meat sauce and béchamel in a baking dish. 5. Add cheese. 6. Bake at 180 degrees Celsius for 40 minutes.',
- 20, 40, 9.00, 2, 'images/recipes/classic-beef-lasagna.jpg'),
+ 'Traditional lasagna with minced beef, tomato sauce and cheese.',
+ 'Cook the minced beef with onion and tomato sauce. Layer the sauce with lasagna sheets and cheese. Bake until the pasta is tender and the top is golden.',
+ 20, 40, 4.00, 1, NULL),
 
 ('R042', 'Chicken Fried Rice',
- 'A quick rice dish with chicken, vegetables, eggs and soy sauce.',
- '1. Cook the rice and let it cool. 2. Cut the chicken into small pieces. 3. Fry the chicken until fully cooked. 4. Add vegetables and cook until tender. 5. Add the rice and beaten eggs. 6. Stir-fry with soy sauce until heated through.',
- 15, 15, 6.50, 2, 'images/recipes/chicken-fried-rice.jpg');
-
-GO
-/* 
-   21. INDEXES
-    */
-
-CREATE INDEX IX_user_preferences_user_id
-    ON dbo.user_preferences(user_id);
-
-CREATE INDEX IX_user_categories_category_id
-    ON dbo.user_dietary_categories(category_id);
-
-CREATE INDEX IX_recipe_categories_category_id
-    ON dbo.recipe_categories(category_id);
-
-CREATE INDEX IX_recipe_ingredients_ingredient_id
-    ON dbo.recipe_ingredients(ingredient_id);
-
-CREATE INDEX IX_food_banks_city
-    ON dbo.food_banks(city);
+ 'Fried rice with chicken, vegetables and soy sauce.',
+ 'Cook the rice and let it cool. Cut and cook the chicken thoroughly. Add vegetables and rice. Stir-fry with soy sauce until heated through.',
+ 10, 15, 3.20, 1, NULL);
 GO
 
+DECLARE @RecipeIngredients TABLE (
+    recipe_id VARCHAR(10),
+    ingredient_name NVARCHAR(100),
+    quantity DECIMAL(10,2),
+    unit NVARCHAR(30)
+); 
 
+INSERT INTO @RecipeIngredients
+(recipe_id, ingredient_name, quantity, unit)
+VALUES
+
+/* R001 - Chickpea Coconut Curry */
+('R001', 'Chickpeas', 120, 'g'),
+('R001', 'Coconut milk', 100, 'ml'),
+('R001', 'Tomatoes', 100, 'g'),
+('R001', 'Onion', 50, 'g'),
+('R001', 'Rice', 75, 'g'),
+
+/* R002 - Lentil Bolognese */
+('R002', 'Red lentils', 80, 'g'),
+('R002', 'Spaghetti', 100, 'g'),
+('R002', 'Carrot', 50, 'g'),
+('R002', 'Tomato sauce', 120, 'ml'),
+('R002', 'Onion', 50, 'g'),
+
+/* R003 - Tofu Vegetable Stir-Fry */
+('R003', 'Tofu', 120, 'g'),
+('R003', 'Broccoli', 80, 'g'),
+('R003', 'Carrot', 50, 'g'),
+('R003', 'Rice', 75, 'g'),
+('R003', 'Tamari sauce', 15, 'ml'),
+
+/* R004 - Sweet Potato and Black Bean Bowl */
+('R004', 'Sweet potato', 150, 'g'),
+('R004', 'Black beans', 100, 'g'),
+('R004', 'Rice', 60, 'g'),
+('R004', 'Lettuce', 30, 'g'),
+('R004', 'Olive oil', 10, 'ml'),
+
+/* R005 - Red Lentil Soup */
+('R005', 'Red lentils', 100, 'g'),
+('R005', 'Carrot', 60, 'g'),
+('R005', 'Onion', 50, 'g'),
+('R005', 'Garlic', 5, 'g'),
+('R005', 'Vegetable stock', 300, 'ml'),
+
+/* R006 - Falafel Pita */
+('R006', 'Chickpeas', 120, 'g'),
+('R006', 'Pita bread', 1, 'piece'),
+('R006', 'Tahini', 15, 'g'),
+('R006', 'Parsley', 10, 'g'),
+('R006', 'Garlic', 5, 'g'),
+
+/* R007 - Stuffed Bell Peppers */
+('R007', 'Bell pepper', 1, 'piece'),
+('R007', 'Rice', 60, 'g'),
+('R007', 'Black beans', 80, 'g'),
+('R007', 'Tomatoes', 80, 'g'),
+('R007', 'Onion', 40, 'g'),
+
+/* R008 - Spinach and Ricotta Lasagna */
+('R008', 'Lasagna sheets', 100, 'g'),
+('R008', 'Spinach', 100, 'g'),
+('R008', 'Ricotta', 80, 'g'),
+('R008', 'Mozzarella', 40, 'g'),
+('R008', 'Tomato sauce', 100, 'ml'),
+
+/* R009 - Creamy Mushroom Risotto */
+('R009', 'Arborio rice', 90, 'g'),
+('R009', 'Mushrooms', 100, 'g'),
+('R009', 'Parmesan', 25, 'g'),
+('R009', 'Cream', 30, 'ml'),
+('R009', 'Vegetable stock', 250, 'ml'),
+
+/* R010 - Vegetable Quiche */
+('R010', 'Shortcrust pastry', 100, 'g'),
+('R010', 'Eggs', 2, 'piece'),
+('R010', 'Cream', 50, 'ml'),
+('R010', 'Spinach', 50, 'g'),
+('R010', 'Grated cheese', 30, 'g'),
+
+/* R011 - Pesto Mozzarella Pasta */
+('R011', 'Pasta', 100, 'g'),
+('R011', 'Basil pesto', 25, 'g'),
+('R011', 'Mozzarella', 60, 'g'),
+('R011', 'Cherry tomatoes', 80, 'g'),
+('R011', 'Olive oil', 5, 'ml'),
+
+/* R012 - Sweet Potato and Feta Salad */
+('R012', 'Sweet potato', 150, 'g'),
+('R012', 'Feta cheese', 50, 'g'),
+('R012', 'Lettuce', 50, 'g'),
+('R012', 'Walnuts', 15, 'g'),
+('R012', 'Lemon', 0.5, 'piece'),
+
+/* R013 - Classic Shakshuka */
+('R013', 'Eggs', 2, 'piece'),
+('R013', 'Tomatoes', 150, 'g'),
+('R013', 'Bell pepper', 60, 'g'),
+('R013', 'Onion', 40, 'g'),
+('R013', 'Olive oil', 10, 'ml'),
+
+/* R014 - Spinach and Cheese Stuffed Shells */
+('R014', 'Pasta', 100, 'g'),
+('R014', 'Spinach', 80, 'g'),
+('R014', 'Ricotta', 70, 'g'),
+('R014', 'Mozzarella', 40, 'g'),
+('R014', 'Tomato sauce', 100, 'ml'),
+
+/* R015 - Lemon Garlic Chicken and Rice */
+('R015', 'Chicken breast', 150, 'g'),
+('R015', 'Rice', 75, 'g'),
+('R015', 'Garlic', 5, 'g'),
+('R015', 'Lemon', 0.5, 'piece'),
+('R015', 'Olive oil', 10, 'ml'),
+
+/* R016 - Baked Salmon and Potatoes */
+('R016', 'Salmon', 150, 'g'),
+('R016', 'Potatoes', 200, 'g'),
+('R016', 'Lemon', 0.5, 'piece'),
+('R016', 'Parsley', 5, 'g'),
+('R016', 'Olive oil', 10, 'ml'),
+
+/* R017 - Chicken Coconut Curry */
+('R017', 'Chicken breast', 150, 'g'),
+('R017', 'Coconut milk', 100, 'ml'),
+('R017', 'Rice', 75, 'g'),
+('R017', 'Onion', 50, 'g'),
+('R017', 'Garlic', 5, 'g'),
+
+/* R018 - Beef and Vegetable Tacos */
+('R018', 'Minced beef', 120, 'g'),
+('R018', 'Corn tortillas', 2, 'piece'),
+('R018', 'Tomatoes', 60, 'g'),
+('R018', 'Lettuce', 30, 'g'),
+('R018', 'Onion', 30, 'g'),
+
+/* R019 - Roasted Vegetable Quinoa Bowl */
+('R019', 'Quinoa', 75, 'g'),
+('R019', 'Zucchini', 100, 'g'),
+('R019', 'Bell pepper', 80, 'g'),
+('R019', 'Lemon', 0.5, 'piece'),
+('R019', 'Olive oil', 10, 'ml'),
+
+/* R020 - Tomato Basil Chicken Pasta */
+('R020', 'Chicken breast', 120, 'g'),
+('R020', 'Pasta', 100, 'g'),
+('R020', 'Cherry tomatoes', 100, 'g'),
+('R020', 'Tomato sauce', 80, 'ml'),
+('R020', 'Fresh basil', 5, 'g'),
+
+/* R021 - Garlic Shrimp Rice Bowl */
+('R021', 'Shrimp', 120, 'g'),
+('R021', 'Rice', 75, 'g'),
+('R021', 'Garlic', 5, 'g'),
+('R021', 'Broccoli', 60, 'g'),
+('R021', 'Olive oil', 10, 'ml'),
+
+/* R022 - Chicken and Vegetable Rice Bowl */
+('R022', 'Chicken breast', 150, 'g'),
+('R022', 'Rice', 75, 'g'),
+('R022', 'Carrot', 50, 'g'),
+('R022', 'Broccoli', 60, 'g'),
+('R022', 'Olive oil', 10, 'ml'),
+
+/* R023 - Stuffed Zucchini Boats */
+('R023', 'Zucchini', 1, 'piece'),
+('R023', 'Minced beef', 100, 'g'),
+('R023', 'Tomatoes', 80, 'g'),
+('R023', 'Onion', 40, 'g'),
+('R023', 'Olive oil', 10, 'ml'),
+
+/* R024 - Shrimp Rice Noodle Stir-Fry */
+('R024', 'Shrimp', 120, 'g'),
+('R024', 'Rice noodles', 100, 'g'),
+('R024', 'Carrot', 50, 'g'),
+('R024', 'Broccoli', 60, 'g'),
+('R024', 'Tamari sauce', 15, 'ml'),
+
+/* R025 - Sweet Potato and Bean Chili */
+('R025', 'Sweet potato', 150, 'g'),
+('R025', 'Black beans', 100, 'g'),
+('R025', 'Tomatoes', 100, 'g'),
+('R025', 'Onion', 50, 'g'),
+('R025', 'Vegetable stock', 150, 'ml'),
+
+/* R026 - Chicken and Quinoa Skillet */
+('R026', 'Chicken breast', 150, 'g'),
+('R026', 'Quinoa', 75, 'g'),
+('R026', 'Bell pepper', 60, 'g'),
+('R026', 'Onion', 40, 'g'),
+('R026', 'Vegetable stock', 150, 'ml'),
+
+/* R027 - Tuna Stuffed Baked Potatoes */
+('R027', 'Potatoes', 250, 'g'),
+('R027', 'Canned tuna', 100, 'g'),
+('R027', 'Sweetcorn', 50, 'g'),
+('R027', 'Olive oil', 10, 'ml'),
+('R027', 'Lemon', 0.5, 'piece'),
+
+/* R028 - Garden Vegetable Omelette */
+('R028', 'Eggs', 2, 'piece'),
+('R028', 'Spinach', 40, 'g'),
+('R028', 'Tomatoes', 50, 'g'),
+('R028', 'Bell pepper', 40, 'g'),
+('R028', 'Olive oil', 5, 'ml'),
+
+/* R029 - Salmon Teriyaki Bowl */
+('R029', 'Salmon', 150, 'g'),
+('R029', 'Rice', 75, 'g'),
+('R029', 'Cucumber', 50, 'g'),
+('R029', 'Honey', 10, 'g'),
+('R029', 'Tamari sauce', 15, 'ml'),
+
+/* R030 - Mediterranean Tuna Pasta */
+('R030', 'Pasta', 100, 'g'),
+('R030', 'Canned tuna', 100, 'g'),
+('R030', 'Cherry tomatoes', 80, 'g'),
+('R030', 'Black olives', 20, 'g'),
+('R030', 'Olive oil', 10, 'ml'),
+
+/* R031 - Garlic Shrimp Spaghetti */
+('R031', 'Shrimp', 120, 'g'),
+('R031', 'Spaghetti', 100, 'g'),
+('R031', 'Garlic', 5, 'g'),
+('R031', 'Parsley', 5, 'g'),
+('R031', 'Olive oil', 10, 'ml'),
+
+/* R032 - Baked Cod and Vegetables */
+('R032', 'Cod', 150, 'g'),
+('R032', 'Potatoes', 100, 'g'),
+('R032', 'Zucchini', 80, 'g'),
+('R032', 'Lemon', 0.5, 'piece'),
+('R032', 'Olive oil', 10, 'ml'),
+
+/* R033 - Salmon and Avocado Sushi Bowl */
+('R033', 'Salmon', 120, 'g'),
+('R033', 'Sushi rice', 75, 'g'),
+('R033', 'Avocado', 0.5, 'piece'),
+('R033', 'Cucumber', 50, 'g'),
+('R033', 'Rice vinegar', 10, 'ml'),
+
+/* R034 - Creamy Salmon Spinach Pasta */
+('R034', 'Salmon', 120, 'g'),
+('R034', 'Pasta', 100, 'g'),
+('R034', 'Spinach', 60, 'g'),
+('R034', 'Lactose-free cream', 50, 'ml'),
+('R034', 'Garlic', 5, 'g'),
+
+/* R035 - Tuna and Chickpea Salad */
+('R035', 'Canned tuna', 100, 'g'),
+('R035', 'Chickpeas', 80, 'g'),
+('R035', 'Lettuce', 50, 'g'),
+('R035', 'Tomatoes', 60, 'g'),
+('R035', 'Red onion', 20, 'g'),
+
+/* R036 - Spaghetti Bolognese */
+('R036', 'Spaghetti', 100, 'g'),
+('R036', 'Minced beef', 120, 'g'),
+('R036', 'Tomato sauce', 120, 'ml'),
+('R036', 'Carrot', 40, 'g'),
+('R036', 'Onion', 40, 'g'),
+
+/* R037 - Creamy Chicken Mushroom Pasta */
+('R037', 'Chicken breast', 120, 'g'),
+('R037', 'Pasta', 100, 'g'),
+('R037', 'Mushrooms', 80, 'g'),
+('R037', 'Cream', 50, 'ml'),
+('R037', 'Garlic', 5, 'g'),
+
+/* R038 - Classic Beef Burger */
+('R038', 'Minced beef', 150, 'g'),
+('R038', 'Burger bun', 1, 'piece'),
+('R038', 'Cheddar cheese', 20, 'g'),
+('R038', 'Lettuce', 20, 'g'),
+('R038', 'Tomatoes', 30, 'g'),
+
+/* R039 - Chicken Fajitas */
+('R039', 'Chicken breast', 150, 'g'),
+('R039', 'Flour tortillas', 2, 'piece'),
+('R039', 'Bell pepper', 80, 'g'),
+('R039', 'Onion', 40, 'g'),
+('R039', 'Fajita seasoning', 10, 'g'),
+
+/* R040 - Chicken Parmesan */
+('R040', 'Chicken breast', 150, 'g'),
+('R040', 'Breadcrumbs', 30, 'g'),
+('R040', 'Eggs', 1, 'piece'),
+('R040', 'Tomato sauce', 80, 'ml'),
+('R040', 'Mozzarella', 40, 'g'),
+
+/* R041 - Classic Beef Lasagna */
+('R041', 'Minced beef', 120, 'g'),
+('R041', 'Lasagna sheets', 100, 'g'),
+('R041', 'Tomato sauce', 120, 'ml'),
+('R041', 'Mozzarella', 40, 'g'),
+('R041', 'Onion', 40, 'g'),
+
+/* R042 - Chicken Fried Rice */
+('R042', 'Chicken breast', 120, 'g'),
+('R042', 'Rice', 100, 'g'),
+('R042', 'Carrot', 40, 'g'),
+('R042', 'Eggs', 1, 'piece'),
+('R042', 'Soy sauce', 15, 'ml');
 /* 
-   22. DATABASE VERIFICATION
-    */
+   16. VERIFICATION
+*/
 
--- Display all tables.
+SELECT * FROM dbo.dietary_categories;
+SELECT * FROM dbo.appliances;
+SELECT * FROM dbo.allergies;
+
 SELECT TABLE_NAME
 FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_TYPE = 'BASE TABLE'
 ORDER BY TABLE_NAME;
-
-
--- Display the number of dietary categories.
-SELECT COUNT(*) AS total_dietary_categories
-FROM dbo.dietary_categories;
-
-
--- Display all dietary categories.
-SELECT *
-FROM dbo.dietary_categories
-ORDER BY id_category;
-
-
--- Display all appliances.
-SELECT *
-FROM dbo.appliances
-ORDER BY id_appliance;
-
-
--- Display all allergies.
-SELECT *
-FROM dbo.allergies
-ORDER BY id_allergy;
 GO
 
+/* Count recipes */
+SELECT COUNT(*) AS total_recipes
+FROM dbo.recipes;
+
+/* Count unique ingredients */
+SELECT COUNT(*) AS total_ingredients
+FROM dbo.ingredients;
+
+/* Count recipe-ingredient relationships */
+SELECT COUNT(*) AS total_recipe_ingredients
+FROM dbo.recipe_ingredients;
+
+/* Display all recipes */
+SELECT *
+FROM dbo.recipes
+ORDER BY id_recipe;
+
+/* Display ingredients for each recipe */
+SELECT
+    r.id_recipe,
+    r.name AS recipe_name,
+    i.name AS ingredient_name,
+    ri.quantity,
+    ri.unit
+FROM dbo.recipe_ingredients ri
+INNER JOIN dbo.recipes r
+    ON r.id_recipe = ri.recipe_id
+INNER JOIN dbo.ingredients i
+    ON i.id_ingredient = ri.ingredient_id
+ORDER BY r.id_recipe, i.name;
+
+/* Check recipes without ingredients */
+SELECT r.id_recipe, r.name
+FROM dbo.recipes r
+LEFT JOIN dbo.recipe_ingredients ri
+    ON r.id_recipe = ri.recipe_id
+WHERE ri.recipe_id IS NULL;
+GO
