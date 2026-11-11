@@ -9,6 +9,31 @@ $routes = [
     'file' => 'pages/home.php',
     'title' => 'Homepage'
   ],
+  
+  'userPage' => [
+    'file' => 'pages/userPage.php',
+    'title' => 'User',
+  ],
+
+  'quiz' => [
+    'file' => 'pages/quiz.php',
+    'title' => 'quiz',
+  ],
+
+  'about' => [
+    'file' => 'pages/about.php',
+    'title' => 'about',
+  ],
+
+  'contact' => [
+    'file' => 'pages/contact.php',
+    'title' => 'contact',
+  ],
+
+  'map' => [
+    'file' => 'pages/map.php',
+    'title' => 'map',
+  ],
 
   /**
    * Gestion des recettes
@@ -62,7 +87,6 @@ $routes = [
     'file' => 'pages/auth/logout.php',
     'title' => 'Logout',
   ],
-
 
 ];
 
