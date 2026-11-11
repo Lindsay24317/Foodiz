@@ -66,7 +66,7 @@ CREATE TABLE dbo.users (
     firstname NVARCHAR(100) NOT NULL,
     lastname NVARCHAR(100) NOT NULL,
     email NVARCHAR(150) NOT NULL,
-    password_hash NVARCHAR(255) NOT NULL,
+    password NVARCHAR(255) NOT NULL,
     created_at DATETIME2 DEFAULT SYSDATETIME(),
 
     CONSTRAINT PK_users PRIMARY KEY (id_user),
