@@ -36,8 +36,8 @@ $routes = [
     'title' => 'Delete a recipe',
     'roles' => ['admin'],
   ],
-
-  'recipies-edit' => [
+//corrected SPELLING from recipies to recipes
+  'recipes-edit' => [
     'file' => 'pages/recipes/recipes-update.php',
     'title' => 'Update a recipe',
     'roles' => ['admin'],
@@ -46,6 +46,13 @@ $routes = [
   'favourite' => [
     'file' => 'pages/recipes/favourite.php',
     'title' => 'Favourites',
+    'roles' => ['user', 'admin']
+],
+
+//Farah - routes for individual recipes
+'recipes-details' => [
+    'file' => 'pages/recipes/details.php',
+    'title' => 'Recipe Details',
     'roles' => ['user', 'admin']
 ],
 
