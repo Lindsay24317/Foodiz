@@ -1,4 +1,3 @@
-
 USE master;
 GO
 
@@ -16,7 +15,7 @@ USE foodiz;
 GO
 
 /* -----------------------------------------------------------------------------
-   2. Connexion (login) et utilisateur (user)
+   Connexion (login) et utilisateur (user)
    -----------------------------------------------------------------------------
    Différence essentielle avec MySQL : SQL Server sépare deux notions.
 
@@ -34,15 +33,18 @@ IF SUSER_ID('demo_user') IS NOT NULL
 
 GO
 CREATE LOGIN demo_user
-    WITH PASSWORD = 'Test1234=', DEFAULT_DATABASE = demo_pdo, CHECK_POLICY = OFF;
+    WITH PASSWORD = 'Test1234=', 
+    DEFAULT_DATABASE = foodiz, 
+    CHECK_POLICY = OFF;
 
 
 GO
-USE demo_pdo;
+USE foodiz;
 
 
 GO
-CREATE USER demo_user FOR LOGIN demo_user;
+CREATE USER demo_user 
+FOR LOGIN demo_user;
 
 
 GO
@@ -194,13 +196,11 @@ CREATE TABLE dbo.recipes (
     preparation_time INT NULL,
     cooking_time INT NULL,
     estimated_cost DECIMAL(8,2) NOT NULL,
-    servings INT NOT NULL,
     image NVARCHAR(255) NULL,
 
     CONSTRAINT PK_recipes PRIMARY KEY (id_recipe),
     CONSTRAINT UQ_recipes_name UNIQUE (name),
     CONSTRAINT CK_recipes_cost CHECK (estimated_cost >= 0),
-    CONSTRAINT CK_recipes_servings CHECK (servings > 0),
     CONSTRAINT CK_recipes_preparation_time
         CHECK (preparation_time >= 0 OR preparation_time IS NULL),
     CONSTRAINT CK_recipes_cooking_time
@@ -429,220 +429,221 @@ INSERT INTO dbo.recipes (
     preparation_time,
     cooking_time,
     estimated_cost,
-    servings,
     image
 )
 VALUES
 ('R001', 'Chickpea Coconut Curry',
  'A creamy vegan curry made with chickpeas, coconut milk and spices.',
  'Chop the onion and tomatoes. Cook the onion with garlic and curry powder. Add chickpeas, tomatoes and coconut milk. Simmer for 15 minutes. Serve with cooked rice.',
- 10, 20, 2.80, 1, NULL),
+ 10, 20, 2.80, 'images/chickpea-coconut-curry.jpg'),
 
 ('R002', 'Lentil Bolognese',
  'A plant-based alternative to traditional Bolognese sauce.',
  'Cook the lentils. Chop the onion and carrot. Cook the vegetables with garlic, then add tomato sauce and lentils. Simmer for 20 minutes. Serve with cooked spaghetti.',
- 15, 25, 2.20, 1, NULL),
+ 15, 25, 2.20, 'images/lentil-bolognese.jpg'),
 
 ('R003', 'Tofu Vegetable Stir-Fry',
  'A quick vegan stir-fry with tofu and fresh vegetables.',
  'Cut the tofu and vegetables into pieces. Cook the tofu in a pan. Add broccoli, carrots and soy sauce. Cook until the vegetables are tender. Serve with rice.',
- 10, 15, 2.90, 1, NULL),
+ 10, 15, 2.90, 'images/tofu-vegetable-stir-fry.jpg'),
 
 ('R004', 'Sweet Potato and Black Bean Bowl',
  'A colourful bowl with roasted sweet potatoes and black beans.',
  'Cut the sweet potato into cubes and roast until tender. Heat the black beans. Prepare the rice. Serve everything in a bowl with lettuce and olive oil.',
- 10, 25, 2.50, 1, NULL),
+ 10, 25, 2.50, 'images/sweet-potato-black-bean-bowl.jpg'),
 
 ('R005', 'Red Lentil Soup',
  'A comforting soup made with red lentils and vegetables.',
  'Chop the onion and carrot. Cook them with garlic. Add red lentils and vegetable stock. Simmer until the lentils are soft. Blend the soup if desired.',
- 10, 25, 1.80, 1, NULL),
+ 10, 25, 1.80, 'images/red-lentil-soup.jpg'),
 
 ('R006', 'Falafel Pita',
  'A vegan pita sandwich filled with falafel and fresh vegetables.',
  'Mash the chickpeas with garlic and parsley. Add flour and spices. Shape into small balls and cook in a pan. Serve inside pita bread with lettuce and tahini.',
- 15, 15, 2.60, 1, NULL),
+ 15, 15, 2.60, 'images/falafel-pita.jpg'),
 
 ('R007', 'Stuffed Bell Peppers',
  'Bell peppers filled with rice, beans and vegetables.',
  'Cut the top of the bell pepper and remove the seeds. Mix cooked rice with black beans, tomatoes and onion. Fill the pepper and bake until tender.',
- 15, 30, 2.40, 1, NULL),
+ 15, 30, 2.40, 'images/stuffed-bell-peppers.jpg'),
 
 ('R008', 'Spinach and Ricotta Lasagna',
  'A vegetarian lasagna with spinach, ricotta and tomato sauce.',
  'Cook the spinach. Mix it with ricotta. Layer lasagna sheets, spinach mixture and tomato sauce in a baking dish. Add mozzarella and bake until golden.',
- 15, 35, 3.50, 1, NULL),
+ 15, 35, 3.50, 'images/spinach-ricotta-lasagna.jpg'),
 
 ('R009', 'Creamy Mushroom Risotto',
  'A creamy Italian risotto with mushrooms and Parmesan.',
  'Cook the onion and mushrooms in olive oil. Add Arborio rice. Gradually add vegetable stock while stirring. Finish with cream and Parmesan.',
- 10, 25, 3.20, 1, NULL),
+ 10, 25, 3.20, 'images/mushroom-risotto.jpg'),
 
 ('R010', 'Vegetable Quiche',
  'A savoury vegetarian quiche with vegetables and cheese.',
  'Place the shortcrust pastry in a baking dish. Whisk eggs with cream. Add spinach, zucchini and grated cheese. Pour the mixture over the pastry and bake until set.',
- 15, 35, 3.00, 1, NULL),
+ 15, 35, 3.00, 'images/vegetable-quiche.jpg'),
 
 ('R011', 'Pesto Mozzarella Pasta',
  'A simple pasta dish with basil pesto and mozzarella.',
  'Cook the pasta. Drain and mix with basil pesto. Add cherry tomatoes and mozzarella. Mix well and serve.',
- 5, 15, 2.70, 1, NULL),
+ 5, 15, 2.70, 'images/pesto-mozzarella-pasta.jpg'),
 
 ('R012', 'Sweet Potato and Feta Salad',
  'A fresh vegetarian salad with sweet potato, feta and walnuts.',
  'Cut the sweet potato into cubes and roast until tender. Mix with lettuce, feta and walnuts. Add olive oil and lemon juice.',
- 10, 25, 3.00, 1, NULL),
+ 10, 25, 3.00, 'images/sweet-potato-feta-salad.jpg'),
 
 ('R013', 'Classic Shakshuka',
  'Eggs cooked in a flavourful tomato and pepper sauce.',
  'Cook the onion and bell pepper in olive oil. Add tomatoes and spices. Simmer until the sauce thickens. Make small spaces and crack the eggs into them. Cook until set.',
- 10, 20, 2.20, 1, NULL),
+ 10, 20, 2.20, 'images/classic-shakshuka.jpg'),
 
 ('R014', 'Spinach and Cheese Stuffed Shells',
  'Pasta shells filled with spinach and ricotta cheese.',
  'Cook the pasta shells. Mix cooked spinach with ricotta. Fill each shell with the mixture. Cover with tomato sauce and mozzarella. Bake until golden.',
- 15, 25, 3.40, 1, NULL),
+ 15, 25, 3.40, 'images/spinach-cheese-stuffed-shells.jpg'),
 
 ('R015', 'Lemon Garlic Chicken and Rice',
  'Chicken breast served with lemon, garlic and rice.',
  'Season the chicken with lemon juice, garlic and olive oil. Cook in a pan until fully cooked. Prepare the rice and serve with the chicken.',
- 10, 20, 3.50, 1, NULL),
+ 10, 20, 3.50, 'images/lemon-garlic-chicken-rice.jpg'),
 
 ('R016', 'Baked Salmon and Potatoes',
  'Oven-baked salmon served with roasted potatoes.',
  'Cut the potatoes into pieces. Season with olive oil and parsley. Bake until nearly tender. Add the salmon with lemon juice and bake until cooked through.',
- 10, 30, 4.80, 1, NULL),
+ 10, 30, 4.80, 'images/baked-salmon-potatoes.jpg'),
 
 ('R017', 'Chicken Coconut Curry',
  'Chicken cooked in a creamy coconut curry sauce.',
  'Cut the chicken into pieces. Cook the onion and garlic. Add chicken and curry powder. Pour in coconut milk and simmer until the chicken is fully cooked. Serve with rice.',
- 10, 25, 3.80, 1, NULL),
+ 10, 25, 3.80, 'images/chicken-coconut-curry.jpg'),
 
 ('R018', 'Beef and Vegetable Tacos',
  'Tacos filled with seasoned beef and fresh vegetables.',
  'Cook the minced beef with onion and spices. Warm the corn tortillas. Add the beef, tomatoes and lettuce. Serve immediately.',
- 10, 15, 3.50, 1, NULL),
+ 10, 15, 3.50, 'images/beef-vegetable-tacos.jpg'),
 
 ('R019', 'Roasted Vegetable Quinoa Bowl',
  'A healthy bowl with quinoa and roasted vegetables.',
  'Cook the quinoa. Cut the zucchini and bell pepper into pieces. Roast the vegetables with olive oil. Serve over quinoa with lemon juice.',
- 10, 25, 2.80, 1, NULL),
+ 10, 25, 2.80, 'images/roasted-vegetable-quinoa-bowl.jpg'),
 
 ('R020', 'Tomato Basil Chicken Pasta',
  'Pasta with chicken, tomatoes and fresh basil.',
  'Cook the pasta. Cut and cook the chicken in a pan. Add cherry tomatoes and tomato sauce. Mix with the pasta and fresh basil.',
- 10, 20, 3.40, 1, NULL),
+ 10, 20, 3.40, 'images/tomato-basil-chicken-pasta.jpg'),
 
 ('R021', 'Garlic Shrimp Rice Bowl',
  'A rice bowl with garlic shrimp and fresh vegetables.',
  'Cook the rice. Cook the shrimp with garlic and olive oil until fully cooked. Add vegetables and serve over rice.',
- 10, 15, 3.90, 1, NULL),
+ 10, 15, 3.90, 'images/garlic-shrimp-rice-bowl.jpg'),
 
 ('R022', 'Chicken and Vegetable Rice Bowl',
  'A gluten-free rice bowl with chicken and vegetables.',
  'Cook the rice. Cut the chicken and vegetables into pieces. Cook the chicken thoroughly, then add the vegetables. Season and serve with rice.',
- 10, 20, 3.50, 1, NULL),
+ 10, 20, 3.50, 'images/chicken-vegetable-rice-bowl.jpg'),
 
 ('R023', 'Stuffed Zucchini Boats',
  'Zucchini halves filled with beef, tomatoes and vegetables.',
  'Cut the zucchini in half and remove some of the centre. Cook minced beef with onion and tomatoes. Fill the zucchini and bake until tender.',
- 15, 30, 3.20, 1, NULL),
+ 15, 30, 3.20, 'images/stuffed-zucchini-boats.jpg'),
 
 ('R024', 'Shrimp Rice Noodle Stir-Fry',
  'Rice noodles stir-fried with shrimp and vegetables.',
  'Prepare the rice noodles. Cook the shrimp with garlic. Add carrots and vegetables. Add the noodles and gluten-free soy sauce. Stir-fry briefly.',
- 10, 15, 3.80, 1, NULL),
+ 10, 15, 3.80, 'images/shrimp-rice-noodle-stir-fry.jpg'),
 
 ('R025', 'Sweet Potato and Bean Chili',
  'A hearty gluten-free chili with sweet potatoes and beans.',
  'Cut the sweet potato into cubes. Cook the onion and tomatoes. Add sweet potato, black beans and vegetable stock. Simmer until tender.',
- 10, 30, 2.30, 1, NULL),
+ 10, 30, 2.30, 'images/sweet-potato-bean-chili.jpg'),
 
 ('R026', 'Chicken and Quinoa Skillet',
  'A one-pan meal with chicken, quinoa and vegetables.',
  'Cut the chicken into pieces. Cook with onion and bell pepper. Add quinoa and vegetable stock. Simmer until the quinoa is cooked and the chicken is fully cooked.',
- 10, 25, 3.60, 1, NULL),
+ 10, 25, 3.60, 'images/chicken-quinoa-skillet.jpg'),
 
 ('R027', 'Tuna Stuffed Baked Potatoes',
  'Baked potatoes filled with tuna and fresh vegetables.',
  'Bake the potato until tender. Mix tuna with sweetcorn and olive oil. Cut the potato open and add the tuna mixture.',
- 10, 35, 2.80, 1, NULL),
+ 10, 35, 2.80, 'images/tuna-stuffed-baked-potatoes.jpg'),
 
 ('R028', 'Garden Vegetable Omelette',
  'A simple omelette with fresh vegetables.',
  'Beat the eggs. Chop the vegetables. Cook them briefly in a pan. Pour in the eggs and cook until the omelette is set.',
- 5, 10, 1.80, 1, NULL),
+ 5, 10, 1.80, 'images/garden-vegetable-omelette.jpg'),
 
 ('R029', 'Salmon Teriyaki Bowl',
  'A salmon rice bowl with a sweet and savoury teriyaki sauce.',
  'Cook the rice. Season the salmon with teriyaki sauce and cook thoroughly. Serve with cucumber and rice.',
- 10, 20, 4.50, 1, NULL),
+ 10, 20, 4.50, 'images/salmon-teriyaki-bowl.jpg'),
 
 ('R030', 'Mediterranean Tuna Pasta',
  'Pasta with tuna, tomatoes and black olives.',
  'Cook the pasta. Drain the tuna. Mix the pasta with tuna, cherry tomatoes, black olives and olive oil. Season and serve.',
- 5, 15, 2.90, 1, NULL),
+ 5, 15, 2.90, 'images/mediterranean-tuna-pasta.jpg'),
 
 ('R031', 'Garlic Shrimp Spaghetti',
  'Spaghetti with garlic shrimp and fresh parsley.',
  'Cook the spaghetti. Cook the shrimp with garlic and olive oil until fully cooked. Add parsley and mix with the spaghetti.',
- 5, 15, 3.50, 1, NULL),
+ 5, 15, 3.50, 'images/garlic-shrimp-spaghetti.jpg'),
 
 ('R032', 'Baked Cod and Vegetables',
  'Oven-baked cod served with roasted vegetables.',
  'Cut the vegetables into pieces and roast with olive oil. Add the cod with lemon juice and parsley. Bake until the fish is cooked through.',
- 10, 25, 4.20, 1, NULL),
+ 10, 25, 4.20, 'images/baked-cod-vegetables.jpg'),
 
 ('R033', 'Salmon and Avocado Sushi Bowl',
  'A sushi-inspired bowl with salmon, avocado and cucumber.',
  'Cook the sushi rice and season with rice vinegar. Cook the salmon thoroughly and cut into pieces. Serve with avocado and cucumber.',
- 15, 20, 4.80, 1, NULL),
+ 15, 20, 4.80, 'images/salmon-avocado-sushi-bowl.jpg'),
 
 ('R034', 'Creamy Salmon Spinach Pasta',
  'Pasta with salmon, spinach and lactose-free cream.',
  'Cook the pasta. Cook the salmon thoroughly. Add spinach and lactose-free cream. Simmer briefly and mix with the pasta.',
- 10, 20, 4.20, 1, NULL),
+ 10, 20, 4.20, 'images/creamy-salmon-spinach-pasta.jpg'),
 
 ('R035', 'Tuna and Chickpea Salad',
  'A fresh salad with tuna, chickpeas and vegetables.',
  'Drain the tuna and chickpeas. Mix with lettuce, tomatoes and red onion. Add lemon juice and olive oil.',
- 10, 0, 2.80, 1, NULL),
+ 10, 0, 2.80, 'images/tuna-chickpea-salad.jpg'),
 
 ('R036', 'Spaghetti Bolognese',
  'Classic spaghetti served with a rich beef and tomato sauce.',
  'Cook the spaghetti. Brown the minced beef with onion and carrot. Add tomato sauce and simmer. Serve over the spaghetti.',
- 10, 25, 3.20, 1, NULL),
+ 10, 25, 3.20, 'images/spaghetti-bolognese.jpg'),
 
 ('R037', 'Creamy Chicken Mushroom Pasta',
  'Pasta with chicken, mushrooms and creamy sauce.',
  'Cook the pasta. Cook the chicken and mushrooms in a pan. Add cream and season. Mix with the pasta and serve.',
- 10, 20, 3.50, 1, NULL),
+ 10, 20, 3.50, 'images/creamy-chicken-mushroom-pasta.jpg'),
 
 ('R038', 'Classic Beef Burger',
  'A homemade beef burger with cheese and fresh vegetables.',
  'Shape the minced beef into a patty and cook thoroughly. Toast the burger bun. Add cheddar, lettuce and tomato. Assemble the burger.',
- 10, 15, 3.80, 1, NULL),
+ 10, 15, 3.80, 'images/classic-beef-burger.jpg'),
 
 ('R039', 'Chicken Fajitas',
  'Chicken strips cooked with peppers and fajita seasoning.',
  'Cut the chicken and peppers into strips. Cook the chicken thoroughly with fajita seasoning. Add the peppers and onion. Serve in warm tortillas.',
- 10, 15, 3.40, 1, NULL),
+ 10, 15, 3.40, 'images/chicken-fajitas.jpg'),
 
 ('R040', 'Chicken Parmesan',
  'Breaded chicken topped with tomato sauce and mozzarella.',
  'Coat the chicken in flour, egg and breadcrumbs. Cook until golden and fully cooked. Add tomato sauce and mozzarella. Bake until the cheese melts.',
- 15, 25, 3.90, 1, NULL),
+ 15, 25, 3.90, 'images/chicken-parmesan.jpg'),
 
 ('R041', 'Classic Beef Lasagna',
  'Traditional lasagna with minced beef, tomato sauce and cheese.',
  'Cook the minced beef with onion and tomato sauce. Layer the sauce with lasagna sheets and cheese. Bake until the pasta is tender and the top is golden.',
- 20, 40, 4.00, 1, NULL),
+ 20, 40, 4.00, 'images/classic-beef-lasagna.jpg'),
 
 ('R042', 'Chicken Fried Rice',
  'Fried rice with chicken, vegetables and soy sauce.',
  'Cook the rice and let it cool. Cut and cook the chicken thoroughly. Add vegetables and rice. Stir-fry with soy sauce until heated through.',
- 10, 15, 3.20, 1, NULL);
+ 10, 15, 3.20, 'images/chicken-fried-rice.jpg');
 GO
+
+
 
 DECLARE @RecipeIngredients TABLE (
     recipe_id VARCHAR(10),
@@ -948,6 +949,87 @@ VALUES
 ('R042', 'Carrot', 40, 'g'),
 ('R042', 'Eggs', 1, 'piece'),
 ('R042', 'Soy sauce', 15, 'ml');
+
+/* Insert unique ingredient names into the ingredients table. */
+INSERT INTO dbo.ingredients (name)
+SELECT DISTINCT ri.ingredient_name
+FROM @RecipeIngredients AS ri
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dbo.ingredients AS i
+    WHERE i.name = ri.ingredient_name
+);
+
+/* Link every recipe to its ingredients and quantities. */
+INSERT INTO dbo.recipe_ingredients (recipe_id, ingredient_id, quantity, unit)
+SELECT
+    ri.recipe_id,
+    i.id_ingredient,
+    ri.quantity,
+    ri.unit
+FROM @RecipeIngredients AS ri
+INNER JOIN dbo.ingredients AS i
+    ON i.name = ri.ingredient_name;
+
+/* Assign the six recipe groups (seven recipes per category). */
+INSERT INTO dbo.recipe_categories (recipe_id, category_id)
+SELECT r.id_recipe,
+       CASE
+           WHEN r.id_recipe BETWEEN 'R001' AND 'R007' THEN 1
+           WHEN r.id_recipe BETWEEN 'R008' AND 'R014' THEN 2
+           WHEN r.id_recipe BETWEEN 'R015' AND 'R021' THEN 3
+           WHEN r.id_recipe BETWEEN 'R022' AND 'R028' THEN 4
+           WHEN r.id_recipe BETWEEN 'R029' AND 'R035' THEN 5
+           ELSE 6
+       END
+FROM dbo.recipes AS r;
+
+/* Appliance associations.
+   Stovetop is used for pan cooking, boiling or simmering.
+   Oven is added for recipes whose instructions require baking or roasting. */
+INSERT INTO dbo.recipe_appliances (recipe_id, appliance_id)
+SELECT id_recipe, 3
+FROM dbo.recipes;
+
+INSERT INTO dbo.recipe_appliances (recipe_id, appliance_id)
+VALUES
+('R004', 1), ('R007', 1), ('R008', 1), ('R010', 1),
+('R012', 1), ('R014', 1), ('R016', 1), ('R023', 1),
+('R027', 1), ('R032', 1), ('R040', 1), ('R041', 1);
+
+/* Derive allergy warnings from the ingredients listed for each recipe.
+   Packaged products may contain additional allergens; verify their labels. */
+INSERT INTO dbo.recipe_allergies (recipe_id, allergy_id)
+SELECT DISTINCT
+    ri.recipe_id,
+    CASE
+        WHEN i.name IN ('Walnuts') THEN 2              -- Tree nuts
+        WHEN i.name IN ('Ricotta', 'Mozzarella', 'Parmesan', 'Cream',
+                        'Grated cheese', 'Feta cheese', 'Lactose-free cream',
+                        'Cheddar cheese') THEN 3       -- Milk
+        WHEN i.name = 'Eggs' THEN 4                    -- Eggs
+        WHEN i.name IN ('Tofu', 'Tamari sauce', 'Soy sauce') THEN 5 -- Soy
+        WHEN i.name IN ('Salmon', 'Canned tuna', 'Cod') THEN 6 -- Fish
+        WHEN i.name = 'Shrimp' THEN 7                  -- Shellfish
+        WHEN i.name IN ('Spaghetti', 'Pita bread', 'Lasagna sheets',
+                        'Shortcrust pastry', 'Pasta', 'Burger bun',
+                        'Flour tortillas', 'Breadcrumbs') THEN 8 -- Wheat
+        WHEN i.name = 'Tahini' THEN 9                  -- Sesame
+    END
+FROM dbo.recipe_ingredients AS ri
+INNER JOIN dbo.ingredients AS i
+    ON i.id_ingredient = ri.ingredient_id
+WHERE i.name IN (
+    'Walnuts', 'Ricotta', 'Mozzarella', 'Parmesan', 'Cream',
+    'Grated cheese', 'Feta cheese', 'Lactose-free cream',
+    'Cheddar cheese', 'Eggs', 'Tofu', 'Tamari sauce', 'Soy sauce',
+    'Salmon', 'Canned tuna', 'Cod', 'Shrimp', 'Spaghetti',
+    'Pita bread', 'Lasagna sheets', 'Shortcrust pastry', 'Pasta',
+    'Burger bun', 'Flour tortillas', 'Breadcrumbs', 'Tahini'
+);
+
+/* Verification: expected totals are 42 recipes and 210 recipe-ingredient links. */
+
 /* 
    16. VERIFICATION
 */
@@ -1000,3 +1082,18 @@ LEFT JOIN dbo.recipe_ingredients ri
     ON r.id_recipe = ri.recipe_id
 WHERE ri.recipe_id IS NULL;
 GO
+
+
+SELECT COUNT(*) AS total_recipe_categories FROM dbo.recipe_categories;
+SELECT COUNT(*) AS total_recipe_appliances FROM dbo.recipe_appliances;
+SELECT COUNT(*) AS total_recipe_allergies FROM dbo.recipe_allergies;
+
+SELECT r.id_recipe, r.name
+FROM dbo.recipes AS r
+LEFT JOIN dbo.recipe_categories AS rc ON rc.recipe_id = r.id_recipe
+WHERE rc.recipe_id IS NULL;
+
+SELECT r.id_recipe, r.name
+FROM dbo.recipes AS r
+LEFT JOIN dbo.recipe_appliances AS ra ON ra.recipe_id = r.id_recipe
+WHERE ra.recipe_id IS NULL;
