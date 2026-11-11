@@ -11,7 +11,7 @@ $routes = [
   ],
 
   /**
-   * Gestion des recettes
+   *Gestion des recettes
    */
   'recipes' => [
     'file' => 'pages/recipes/recipes.php',
@@ -42,6 +42,12 @@ $routes = [
     'title' => 'Update a recipe',
     'roles' => ['admin'],
   ],
+//added by Farah for - route for favourites
+  'favourite' => [
+    'file' => 'pages/recipes/favourite.php',
+    'title' => 'Favourites',
+    'roles' => ['user', 'admin']
+],
 
 
   /**
@@ -95,7 +101,7 @@ if ($requiredRoles !== null) {
 $file = $route["file"];
 $title = $route["title"];
 
-require_once 'config/database.php';
+require_once 'config/database.php'; 
 
 // Assembler les pages
 
