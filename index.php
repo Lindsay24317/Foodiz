@@ -7,57 +7,42 @@ $routes = [
 
   '' => [
     'file' => 'pages/home.php',
-    'title' => 'Accueil'
+    'title' => 'Homepage'
   ],
 
   /**
-   * Gestion des livres
+   * Gestion des recettes
    */
-  'books' => [
-    'file' => 'pages/books/read.php',
-    'title' => 'Liste des livres',
+  'recipes' => [
+    'file' => 'pages/recipes/recipes.php',
+    'title' => 'List of recipes',
     'roles' => ['user', 'admin'],
   ],
 
-  'book-details' => [
-    'file' => 'pages/books/details.php',
-    'title' => 'Détails du livre',
+  'recipes-details' => [
+    'file' => 'pages/recipes/details.php',
+    'title' => 'Recipe Details',
     'roles' => ['user', 'admin'],
   ],
 
-  'book-create' => [
-    'file' => 'pages/books/create.php',
-    'title' => 'Création d\'un livre',
+  'recipes-create' => [
+    'file' => 'pages/recipes/create.php',
+    'title' => 'Create a Recipe',
     'roles' => ['admin'],
   ],
 
-  'book-delete' => [
-    'file' => 'pages/books/book-delete.php',
-    'title' => 'Suppression d\'un livre',
+  'recipes-delete' => [
+    'file' => 'pages/recipes/recipe-delete.php',
+    'title' => 'Delete a recipe',
     'roles' => ['admin'],
   ],
 
-  'book-edit' => [
-    'file' => 'pages/books/book-update.php',
-    'title' => 'Modification d\'un livre',
+  'recipies-edit' => [
+    'file' => 'pages/recipes/recipes-update.php',
+    'title' => 'Update a recipe',
     'roles' => ['admin'],
   ],
 
-
-
-  /**
-   * Gestion des auteurs
-   */
-
-  'authors' => [
-    'file' => 'pages/authors/authors-list.php',
-    'title' => 'Liste des auteurs',
-  ],
-
-  'author-details' => [
-    'file' => 'pages/authors/author-details.php',
-    'title' => 'Détails de l\'auteur',
-  ],
 
   /**
    * Gestion de l'authentification
@@ -65,17 +50,17 @@ $routes = [
 
   'register' => [
     'file' => 'pages/auth/register.php',
-    'title' => 'S\'enregistrer',
+    'title' => 'Register',
   ],
 
   'login' => [
     'file' => 'pages/auth/login.php',
-    'title' => 'Se connecter',
+    'title' => 'Login',
   ],
 
   'logout' => [
     'file' => 'pages/auth/logout.php',
-    'title' => 'Se déconnecter',
+    'title' => 'Logout',
   ],
 
 
