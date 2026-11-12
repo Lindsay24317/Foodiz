@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$errors) {
 
         // Rechercher l'utilisateur
-        $sql = "SELECT id_user, firstname, lastname, email, password, role
+        $sql = "SELECT id_user, firstname, lastname, email, password,role
                 FROM dbo.users
                 WHERE email = ?";
 
