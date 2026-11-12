@@ -9,9 +9,9 @@ $routes = [
     'file' => 'pages/home.php',
     'title' => 'Homepage'
   ],
-
+  
   /**
-   * Gestion des recettes
+   *Gestion des recettes
    */
   'recipes' => [
     'file' => 'pages/recipes/recipes.php',
@@ -36,13 +36,63 @@ $routes = [
     'title' => 'Delete a recipe',
     'roles' => ['admin'],
   ],
-
-  'recipies-edit' => [
+//corrected SPELLING from recipies to recipes
+  'recipes-edit' => [
     'file' => 'pages/recipes/recipes-update.php',
     'title' => 'Update a recipe',
     'roles' => ['admin'],
   ],
+//added by Farah for - route for favourites
+  'favourite' => [
+    'file' => 'pages/recipes/favourite.php',
+    'title' => 'Favourites',
+    'roles' => ['user', 'admin'],
+],
 
+  /**
+   * Gestion de la map
+   */
+  'map' => [
+    'file' => 'pages/map.php',
+    'title' => 'Foodiz - Map',
+    'roles' => ['user', 'admin'],
+],
+
+  /**
+   * gestion du quiz
+   */
+
+  'quiz' => [
+    'file' => 'pages/quiz.php',
+    'title' => 'Foodiz - Quiz',
+  ],
+
+   /**
+   * gestion du sujet
+   */
+  'about' => [
+    'file' => 'pages/about.php',
+    'title' => 'About Us',
+  ],
+
+   /**
+   * gestion de contact
+   */
+
+  'contact' => [
+    'file' => 'pages/contact.php',
+    'title' => 'Contact',
+  ],
+
+  /**
+   * gestion de profile utilisateur
+   */
+
+  'userPage' => [
+    'file' => 'pages/userPage.php',
+    'title' => 'My Account',
+    'roles' => ['user', 'admin'],
+  ],
 
   /**
    * Gestion de l'authentification
@@ -62,7 +112,6 @@ $routes = [
     'file' => 'pages/auth/logout.php',
     'title' => 'Logout',
   ],
-
 
 ];
 
@@ -95,7 +144,7 @@ if ($requiredRoles !== null) {
 $file = $route["file"];
 $title = $route["title"];
 
-require_once 'config/database.php';
+require_once 'config/database.php'; 
 
 // Assembler les pages
 

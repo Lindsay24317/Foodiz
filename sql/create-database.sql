@@ -67,6 +67,7 @@ CREATE TABLE dbo.users (
     lastname NVARCHAR(100) NOT NULL,
     email NVARCHAR(150) NOT NULL,
     password NVARCHAR(255) NOT NULL,
+    role VARCHAR(10) NOT NULL DEFAULT 'user',
     created_at DATETIME2 DEFAULT SYSDATETIME(),
 
     CONSTRAINT PK_users PRIMARY KEY (id_user),
@@ -330,6 +331,7 @@ GO
 CREATE TABLE dbo.food_banks (
     id_food_bank INT IDENTITY(1,1) NOT NULL,
     name NVARCHAR(150) NOT NULL,
+    category NVARCHAR(100) NOT NULL,
     address NVARCHAR(255) NOT NULL,
     postal_code NVARCHAR(20) NULL,
     city NVARCHAR(100) NOT NULL,
@@ -444,7 +446,7 @@ VALUES
 
 ('R003', 'Tofu Vegetable Stir-Fry',
  'A quick vegan stir-fry with tofu and fresh vegetables.',
- 'Cut the tofu and vegetables into pieces. Cook the tofu in a pan. Add broccoli, carrots and soy sauce. Cook until the vegetables are tender. Serve with rice.',
+ 'Cut the tofu and vegetables into pieces. Cook the tofu in a pan. Add broccoli, carrots and tamari sauce. Cook until the vegetables are tender. Serve with rice.',
  10, 15, 2.90, 'images/tofu-vegetable-stir-fry.jpg'),
 
 ('R004', 'Sweet Potato and Black Bean Bowl',
@@ -697,6 +699,7 @@ VALUES
 ('R006', 'Tahini', 15, 'g'),
 ('R006', 'Parsley', 10, 'g'),
 ('R006', 'Garlic', 5, 'g'),
+('R006', 'Chickpea flour', 20, 'g'),
 
 /* R007 - Stuffed Bell Peppers */
 ('R007', 'Bell pepper', 1, 'piece'),
@@ -725,6 +728,7 @@ VALUES
 ('R010', 'Cream', 50, 'ml'),
 ('R010', 'Spinach', 50, 'g'),
 ('R010', 'Grated cheese', 30, 'g'),
+('R010', 'Zucchini', 50, 'g'),
 
 /* R011 - Pesto Mozzarella Pasta */
 ('R011', 'Pasta', 100, 'g'),
@@ -931,6 +935,7 @@ VALUES
 
 /* R040 - Chicken Parmesan */
 ('R040', 'Chicken breast', 150, 'g'),
+('R040', 'Flour', 20, 'g'),
 ('R040', 'Breadcrumbs', 30, 'g'),
 ('R040', 'Eggs', 1, 'piece'),
 ('R040', 'Tomato sauce', 80, 'ml'),
@@ -971,18 +976,67 @@ FROM @RecipeIngredients AS ri
 INNER JOIN dbo.ingredients AS i
     ON i.name = ri.ingredient_name;
 
-/* Assign the six recipe groups (seven recipes per category). */
+/* Associate recipes with multiple dietary categories */
+
+/* Vegan */
 INSERT INTO dbo.recipe_categories (recipe_id, category_id)
-SELECT r.id_recipe,
-       CASE
-           WHEN r.id_recipe BETWEEN 'R001' AND 'R007' THEN 1
-           WHEN r.id_recipe BETWEEN 'R008' AND 'R014' THEN 2
-           WHEN r.id_recipe BETWEEN 'R015' AND 'R021' THEN 3
-           WHEN r.id_recipe BETWEEN 'R022' AND 'R028' THEN 4
-           WHEN r.id_recipe BETWEEN 'R029' AND 'R035' THEN 5
-           ELSE 6
-       END
-FROM dbo.recipes AS r;
+SELECT id_recipe, 1
+FROM dbo.recipes
+WHERE id_recipe IN (
+    'R001','R002','R003','R004','R005','R006',
+    'R007','R019','R025'
+);
+
+/* Vegetarian */
+INSERT INTO dbo.recipe_categories (recipe_id, category_id)
+SELECT id_recipe, 2
+FROM dbo.recipes
+WHERE id_recipe IN (
+    'R001','R002','R003','R004','R005','R006','R007',
+    'R008','R009','R010','R011','R012','R013','R014',
+    'R019','R025','R028'
+);
+
+/* Lactose-free */
+INSERT INTO dbo.recipe_categories (recipe_id, category_id)
+SELECT id_recipe, 3
+FROM dbo.recipes
+WHERE id_recipe IN (
+    'R001','R002','R003','R004','R005','R006','R007',
+    'R013','R015','R016','R017','R018','R019',
+    'R020','R021','R022','R023','R024','R025',
+    'R026','R027','R028','R029','R030','R031',
+    'R032','R033','R034','R035','R036','R039','R042'
+);
+
+/* Gluten-free */
+INSERT INTO dbo.recipe_categories (recipe_id, category_id)
+SELECT id_recipe, 4
+FROM dbo.recipes
+WHERE id_recipe IN (
+    'R001','R003','R004','R005','R007',
+    'R009','R012','R013','R015','R016','R017',
+    'R018','R019','R021','R022','R023','R024',
+    'R025','R026','R027','R028','R029',
+    'R032','R033','R035'
+);
+
+/* Pescatarian */
+INSERT INTO dbo.recipe_categories (recipe_id, category_id)
+SELECT id_recipe, 5
+FROM dbo.recipes
+WHERE id_recipe IN (
+    'R001','R002','R003','R004','R005','R006','R007',
+    'R008','R009','R010','R011','R012','R013','R014',
+    'R016','R019','R021','R024','R025','R027',
+    'R028','R029','R030','R031','R032','R033',
+    'R034','R035'
+);
+
+/* Regular - No dietary restrictions */
+INSERT INTO dbo.recipe_categories (recipe_id, category_id)
+SELECT id_recipe, 6
+FROM dbo.recipes;
 
 /* Appliance associations.
    Stovetop is used for pan cooking, boiling or simmering.
@@ -1013,7 +1067,7 @@ SELECT DISTINCT
         WHEN i.name = 'Shrimp' THEN 7                  -- Shellfish
         WHEN i.name IN ('Spaghetti', 'Pita bread', 'Lasagna sheets',
                         'Shortcrust pastry', 'Pasta', 'Burger bun',
-                        'Flour tortillas', 'Breadcrumbs') THEN 8 -- Wheat
+                        'Flour tortillas', 'Breadcrumbs', 'Flour') THEN 8 -- Wheat
         WHEN i.name = 'Tahini' THEN 9                  -- Sesame
     END
 FROM dbo.recipe_ingredients AS ri
@@ -1025,7 +1079,7 @@ WHERE i.name IN (
     'Cheddar cheese', 'Eggs', 'Tofu', 'Tamari sauce', 'Soy sauce',
     'Salmon', 'Canned tuna', 'Cod', 'Shrimp', 'Spaghetti',
     'Pita bread', 'Lasagna sheets', 'Shortcrust pastry', 'Pasta',
-    'Burger bun', 'Flour tortillas', 'Breadcrumbs', 'Tahini'
+    'Burger bun', 'Flour tortillas', 'Breadcrumbs', 'Flour', 'Tahini'
 );
 
 /* Verification: expected totals are 42 recipes and 210 recipe-ingredient links. */

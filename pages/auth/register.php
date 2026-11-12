@@ -2,16 +2,21 @@
 
 $errors = [];
 
-$values = [ 'email' => '' ];
+$values = [
+    'firstname' => '',
+    'lastname' => '',
+    'email' => ''
+];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-  $values['firstname'] = trim($_POST['firstname']) ?? '';
-  $values['lastname'] = trim($_POST['lastname']) ?? '';
-  $values['email'] = trim($_POST['email']) ?? '';
-  $password = trim($_POST["password"]);
-  $confirmation = trim($_POST["confirmation"]);
+  // Récupérer les données du formulaire
+  $values['firstname'] = trim($_POST['firstname'] ?? '');
+  $values['lastname'] = trim($_POST['lastname'] ?? '');
+  $values['email'] = trim($_POST['email'] ?? '');
 
+  $password = $_POST['password'] ?? '';
+  $confirmation = $_POST['confirmation'] ?? '';
   // Validation
   if ($values['firstname'] === '') {
     $errors['firstname'] =  "the firstname is required";
@@ -50,17 +55,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       
       $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-      $sql = "INSERT INTO utilisateur (firstname, lastname, email, password)
+      // Ajouter l'utilisateur dans la base Foodiz
+      $sql = "INSERT INTO dbo.users (firstname, lastname, email, password)
               VALUES (?, ?, ?, ?)";
 
+      // Préparer la requête
       $statement = $pdo->prepare($sql);
-      $statement->execute([$values['email'], $password_hash]);
 
-      $_SESSION['user'] = [
-        'id' => $pdo->lastInsertId(),
-        'email' => $values['email'],
-        'role' => 'user'
-      ] ;     
+      // Envoyer les données
+      $statement->execute([
+          $values['firstname'],
+          $values['lastname'],
+          $values['email'],
+          $password_hash
+      ]);
 
       header("Location: index.php");
       exit();
@@ -80,16 +88,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <form method="post">
 
     <div>
-    <label for="firstname">Firstname:</label>
-    <input type="firstname" name="firstname" id="firstname" value="<?= $values['firstname'] ?>">
+    <label for="firstname">First name:</label>
+    <input type="text" name="firstname" id="firstname" value="<?= $values['firstname'] ?>">
     <?php if(isset($errors['firstname'])) : ?>
       <span class="error"><?= $errors['firstname'] ?></span>
     <?php endif ?>
   </div>
 
   <div>
-    <label for="lastname">Lastname:</label>
-    <input type="lastname" name="lastname" id="lastname" value="<?= $values['lastname'] ?>">
+    <label for="lastname">Last name:</label>
+    <input type="text" name="lastname" id="lastname" value="<?= $values['lastname'] ?>">
     <?php if(isset($errors['lastname'])) : ?>
       <span class="error"><?= $errors['lastname'] ?></span>
     <?php endif ?>

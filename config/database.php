@@ -4,7 +4,7 @@
 
 $source = "sqlsrv";
 $host = "WAD-15\IF3"; // Server name sur SSMS
-$dbname = "demo_pdo";
+$dbname = "foodiz";
 
 $dsn = "$source:Server=$host;Database=$dbname;TrustServerCertificate=true";
 $user = "demo_user";
