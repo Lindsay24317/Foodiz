@@ -1,0 +1,363 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.4 2390de5a",
+  "osm3s": {
+    "timestamp_osm_base": "2026-11-11T23:47:55Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+    {
+      "type": "node",
+      "id": 1157492776,
+      "lat": 50.8845525,
+      "lon": 4.7031243,
+      "tags": {
+        "addr:city": "Leuven",
+        "addr:country": "BE",
+        "addr:housenumber": "44",
+        "addr:postcode": "3000",
+        "addr:street": "Sint-Maartenstraat",
+        "amenity": "social_facility",
+        "description": "Dagonthaal met warme maaltijden en ondersteuning voor mensen in een moeilijke financiële, familiale of gezondheidssituatie.",
+        "email": "leuven@poverello.be",
+        "fee": "yes",
+        "name": "Poverello Leuven",
+        "opening_hours": "Mo-Tu,Th-Fr 10:00-14:00",
+        "operator": "Poverello",
+        "operator:type": "vzw",
+        "phone": "+32 16 29 16 84",
+        "social_facility": "food_bank",
+        "website": "https://www.poverello.be/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 2370946893,
+      "lat": 50.8698677,
+      "lon": 4.3816442,
+      "tags": {
+        "amenity": "social_facility",
+        "contact:website": "https://www.episol.be/",
+        "membership": "yes",
+        "name": "Episol",
+        "panoramax": "12d5e805-0f45-4344-8b4d-b9e47b938071",
+        "shop": "grocery",
+        "social_facility": "food_bank",
+        "social_facility:for": "underprivileged"
+      }
+    },
+    {
+      "type": "node",
+      "id": 2668532530,
+      "lat": 50.834029,
+      "lon": 4.3239265,
+      "tags": {
+        "amenity": "social_facility",
+        "check_date:opening_hours": "2026-09-16",
+        "name": "S.O.S. La Bouée ASBL",
+        "opening_hours:signed": "no",
+        "social_facility": "food_bank"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4007708189,
+      "lat": 50.834407,
+      "lon": 4.3235406,
+      "tags": {
+        "amenity": "social_facility",
+        "name": "Cantine Associative des Goujons",
+        "social_facility": "food_bank",
+        "wheelchair": "limited"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4029820804,
+      "lat": 50.8337554,
+      "lon": 4.3452291,
+      "tags": {
+        "amenity": "social_facility",
+        "contact:phone": "+32 2 510 09 10",
+        "contact:website": "https://www.ordredemaltebelgique.org/fr/",
+        "name": "La Fontaine",
+        "opening_hours": "Mo-Fr 10:00-13:00; We off",
+        "operator": "Ordre de Malte Belgique",
+        "shower": "yes",
+        "social_facility": "food_bank",
+        "social_facility:for": "homeless"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4029920919,
+      "lat": 50.8239929,
+      "lon": 4.3268378,
+      "tags": {
+        "amenity": "social_facility",
+        "contact:phone": "+32 2 348 96 10",
+        "contact:website": "https://maisons.croix-rouge.be/maisons/forest/service/3933/",
+        "name": "Croix-Rouge – épicerie sociale",
+        "social_facility": "food_bank",
+        "social_facility:for": "underprivileged"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4379038019,
+      "lat": 51.0557457,
+      "lon": 3.7155463,
+      "tags": {
+        "amenity": "social_facility",
+        "name": "Poverello Gent",
+        "social_facility": "food_bank",
+        "website": "https://www.poverello.be/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4417654799,
+      "lat": 50.8375376,
+      "lon": 4.3438778,
+      "tags": {
+        "amenity": "social_facility",
+        "name": "Poverello Bruxelles I - Poverello Brussel I",
+        "name:fr": "Poverello Bruxelles I",
+        "name:nl": "Poverello Brussel I",
+        "social_facility": "food_bank"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4421903336,
+      "lat": 50.8595792,
+      "lon": 4.3649256,
+      "tags": {
+        "amenity": "social_facility",
+        "name": "Poverello Bruxelles – Brussel II",
+        "social_facility": "food_bank",
+        "website": "https://www.poverello.be/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 7481952194,
+      "lat": 51.102753,
+      "lon": 5.1692301,
+      "tags": {
+        "addr:city": "Ham",
+        "addr:housenumber": "3",
+        "addr:postcode": "3945",
+        "addr:street": "Pleintje",
+        "amenity": "social_facility",
+        "email": "wies.vincentius@gmail.com",
+        "name": "St. Vincentiusvereniging Ham Tessenderlo",
+        "phone": "+32 13 32 30 16",
+        "social_facility": "food_bank",
+        "website": "http://www.vincentiushamtessenderlo.be/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 7538868945,
+      "lat": 50.686691,
+      "lon": 4.3689014,
+      "tags": {
+        "addr:housenumber": "95",
+        "addr:street": "Chaussée d'Alsemberg",
+        "amenity": "social_facility",
+        "contact:email": "ptitmagabraine@gmail.com",
+        "contact:website": "https://www.ptitmagabraine.be",
+        "description": "Épicerie sociale",
+        "name": "Le P'tit Maga",
+        "opening_hours": "Tu 16:00-18:00; Th 09:30-11:30",
+        "operator:type": "private_non_profit",
+        "shop": "convenience",
+        "social_facility": "food_bank",
+        "social_facility:for": "underprivileged"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9041026264,
+      "lat": 50.7408333,
+      "lon": 4.239175,
+      "tags": {
+        "amenity": "social_facility",
+        "social_facility": "food_bank",
+        "social_facility:for": "underprivileged;senior"
+      }
+    },
+    {
+      "type": "node",
+      "id": 10144665389,
+      "lat": 50.8384805,
+      "lon": 4.3469663,
+      "tags": {
+        "amenity": "social_facility",
+        "contact:email": "infos@capucines.be",
+        "contact:phone": "+32 2 502 02 09",
+        "contact:website": "https://capucines.be/",
+        "full_name": "Épicerie sociale Les Capucines",
+        "name": "Les Capucines",
+        "operator": "Les Capucines asbl",
+        "shop": "convenience",
+        "social_facility": "food_bank",
+        "social_facility:for": "underprivileged"
+      }
+    },
+    {
+      "type": "node",
+      "id": 10276008754,
+      "lat": 50.8950167,
+      "lon": 4.3971711,
+      "tags": {
+        "amenity": "social_facility",
+        "contact:phone": "+32 2 522 97 00",
+        "contact:website": "https://www.foodbank-brabant.be",
+        "name": "Banque Alimentaire Bruxelles-Brabant - Voedselbank Brussel-Brabant",
+        "name:fr": "Banque Alimentaire Bruxelles-Brabant",
+        "name:nl": "Voedselbank Brussel-Brabant",
+        "social_facility": "food_bank"
+      }
+    },
+    {
+      "type": "node",
+      "id": 10565403446,
+      "lat": 50.8359863,
+      "lon": 4.3796328,
+      "tags": {
+        "amenity": "social_facility",
+        "contact:email": "svp143@vincentdepaul.be",
+        "contact:mobile": "+32 473 70 32 69",
+        "contact:website": "https://www.vincentdepaul.be/bij-jou-in-de-buurt/brussel-1",
+        "description:fr": "Distribution de colis alimentaires",
+        "description:nl": "Distributie van voedselpaketten",
+        "name": "Société de Saint-Vincent de Paul - Sint-Vincentius a Paulo-vereniging",
+        "name:fr": "Société de Saint-Vincent de Paul",
+        "name:nl": "Sint-Vincentius a Paulo-vereniging",
+        "opening_hours": "Mo,Th 10:30-12:30",
+        "social_facility": "food_bank",
+        "social_facility:for": "underprivileged"
+      }
+    },
+    {
+      "type": "node",
+      "id": 11257387582,
+      "lat": 51.1483887,
+      "lon": 4.4344466,
+      "tags": {
+        "amenity": "social_facility",
+        "name": "Voedselbank",
+        "social_facility": "food_bank"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12138506412,
+      "lat": 50.8769156,
+      "lon": 4.3051761,
+      "tags": {
+        "amenity": "social_facility",
+        "name": "Épicerie Sociale - Sociale kruidenierswinkel",
+        "name:fr": "Épicerie Sociale",
+        "name:nl": "Sociale kruidenierswinkel",
+        "opening_hours": "Tu 09:00-11:00; Th 13:30-15:30",
+        "social_facility": "food_bank"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12560992687,
+      "lat": 50.8193862,
+      "lon": 5.2142572,
+      "tags": {
+        "amenity": "social_facility",
+        "name": "Team Hope",
+        "social_facility": "food_bank"
+      }
+    },
+    {
+      "type": "way",
+      "id": 260474625,
+      "center": {
+        "lat": 50.8377025,
+        "lon": 4.344652
+      },
+      "nodes": [
+        2659571306,
+        10995752668,
+        10995752669,
+        2659570430,
+        2659570572,
+        2659571088,
+        2659571109,
+        2659571196,
+        2659571387,
+        2659571007,
+        2659570820,
+        2659570706,
+        2659570713,
+        2659570519,
+        2659570503,
+        2659570725,
+        2659570752,
+        2659570773,
+        2659570833,
+        2659570901,
+        2659570926,
+        2659570944,
+        2659570978,
+        2659571014,
+        2659571041,
+        2659571103,
+        2659571150,
+        2659571212,
+        2659571550,
+        2659571578,
+        2659571655,
+        2659571450,
+        2659571358,
+        2659571306
+      ],
+      "tags": {
+        "amenity": "social_facility",
+        "building:part": "warehouse",
+        "contact:phone": "+32 2 511 52 12",
+        "name": "Poverello",
+        "social_facility": "food_bank"
+      }
+    },
+    {
+      "type": "way",
+      "id": 829779142,
+      "center": {
+        "lat": 50.9495333,
+        "lon": 5.108498
+      },
+      "nodes": [
+        7744616811,
+        7744616812,
+        7744616813,
+        7744616814,
+        7744616815,
+        7744616816,
+        7744616817,
+        7744616818,
+        7744616819,
+        7744616820,
+        7744616821,
+        7744616822,
+        7744616811
+      ],
+      "tags": {
+        "addr:housenumber": "42",
+        "addr:street": "Diestersteenweg",
+        "amenity": "social_facility",
+        "building": "civic",
+        "name": "Vincentius Halen",
+        "social_facility": "food_bank"
+      }
+    }
+  ]
+}

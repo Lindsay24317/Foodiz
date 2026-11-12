@@ -43,6 +43,50 @@ $routes = [
     'roles' => ['admin'],
   ],
 
+  /**
+   * Gestion de la map
+   */
+  'map' => [
+    'file' => 'pages/map.php',
+    'title' => 'Foodiz - Map',
+    'roles' => ['user', 'admin'],
+],
+
+  /**
+   * gestion du quiz
+   */
+
+  'quiz' => [
+    'file' => 'pages/quiz.php',
+    'title' => 'Foodiz - Quiz',
+  ],
+
+   /**
+   * gestion du sujet
+   */
+  'about' => [
+    'file' => 'pages/about.php',
+    'title' => 'About Us',
+  ],
+
+   /**
+   * gestion de contact
+   */
+
+  'contact' => [
+    'file' => 'pages/contact.php',
+    'title' => 'Contact',
+  ],
+
+  /**
+   * gestion de profile utilisateur
+   */
+
+  'userPage' => [
+    'file' => 'pages/userPage.php',
+    'title' => 'My Account',
+    'roles' => ['user', 'admin'],
+  ],
 
   /**
    * Gestion de l'authentification
