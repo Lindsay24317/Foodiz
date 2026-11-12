@@ -9,7 +9,7 @@ $routes = [
     'file' => 'pages/home.php',
     'title' => 'Homepage'
   ],
-
+  
   /**
    * Gestion des recettes
    */
@@ -106,7 +106,6 @@ $routes = [
     'file' => 'pages/auth/logout.php',
     'title' => 'Logout',
   ],
-
 
 ];
 
