@@ -28,57 +28,49 @@
         <div class="category-container">
 
             <div class="category">
+            <a href="index.php?page=recipes&search=&category=1&">
                 <img src="images/chickpea-coconut-curry.jpg" alt="Vegan meal">
                 <h3>Vegan</h3>
+            </a>
             </div>
 
             <div class="category">
+                <a href="index.php?page=recipes&search=&category=2&">
                 <img src="images/vegetable-quiche.jpg" alt="Vegetarian meal">
                 <h3>Vegetarian</h3>
+                </a>
             </div>
 
             <div class="category">
+            <a href="index.php?page=recipes&search=&category=3&">
                 <img src="images/sweet-potato-black-bean-bowl.jpg" alt="Lactose-free meal">
                 <h3>Lactose-free</h3>
+            </a>
             </div>
 
             <div class="category">
+            <a href="index.php?page=recipes&search=&category=4&">
                 <img src="images/tuna-chickpea-salad.jpg" alt="Gluten-free meal">
                 <h3>Gluten-free</h3>
+            </a>
             </div>
 
             <div class="category">
+            <a href="index.php?page=recipes&search=&category=5&">
                 <img src="images/salmon-teriyaki-bowl.jpg" alt="Pescatarian meal">
                 <h3>Pescatarian</h3>
+            </a>
             </div>
 
             <div class="category">
+            <a href="index.php?page=recipes&search=&category=6&">
                 <img src="images/spaghetti-bolognese.jpg" alt="Regular meal">
                 <h3>Regular</h3>
+            </a>
             </div>
 
         </div>
     </section>
-
-
-    <!-- DISCOVER SECTION -->
-    <section class="discover">
-
-        <div class="discover-text">
-            <h2>Discover Affordable Recipes</h2>
-
-            <p>Simple, tasty and budget-friendly meals.</p>
-
-            <a href="index.php?page=recipes" class="secondary-btn">
-                Browse Recipes →
-            </a>
-        </div>
-
-        <img src="images/baked-salmon-potatoes.jpg"
-             alt="Affordable homemade recipe">
-
-    </section>
-
 
     <!-- PARTNERS SECTION -->
     <section class="partners" id="partners">
