@@ -240,55 +240,264 @@
 
 /* RECIPE DETAILS PAGE */
 
+
+/*
+   FOODIZ - RECIPE DETAILS
+*/
+
 .recipe-details-page {
-    max-width: 850px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 40px 20px;
 }
+
+/* BACK LINK */
 
 .back-link {
     display: inline-block;
     margin-bottom: 25px;
     color: #2e7d32;
     text-decoration: none;
+    font-size: 15px;
 }
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* RECIPE TITLE */
 
 .recipe-details-page h1 {
     font-size: 32px;
+    color: #333;
     margin-bottom: 25px;
 }
+
+/* RECIPE IMAGE */
 
 .details-image {
     width: 100%;
-    max-height: 400px;
+    height: 400px;
     object-fit: cover;
-    border-radius: 12px;
+    display: block;
+    border-radius: 14px;
     margin-bottom: 25px;
 }
+
+/* DESCRIPTION */
 
 .details-description {
-    font-size: 17px;
+    font-size: 16px;
+    color: #666;
     line-height: 1.7;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
-.details-info {
+/* DIETARY CATEGORIES */
+
+.details-diets {
     display: flex;
     flex-wrap: wrap;
-    gap: 25px;
-    background: #f5f5f5;
-    padding: 20px;
-    border-radius: 10px;
+    gap: 10px;
     margin-bottom: 30px;
 }
 
-.recipe-details-page h2 {
-    margin-bottom: 15px;
+.diet-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
 }
 
-.details-instructions {
-    line-height: 1.9;
-    white-space: normal;
+/* TIME AND BUDGET */
+
+.details-info {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.details-info > div {
+    background: white;
+    padding: 22px;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.details-info strong {
+    display: block;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.details-info p {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2e7d32;
+    margin: 0;
+}
+
+/* INGREDIENTS AND APPLIANCES LAYOUT */
+
+.details-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 25px;
+}
+
+/* RECIPE SECTIONS */
+
+.details-section {
+    background: white;
+    border-radius: 14px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.details-columns .details-section {
+    margin-bottom: 0;
+}
+
+.details-section h2 {
+    font-size: 24px;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* INGREDIENTS */
+
+.ingredients-list {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.ingredients-list li {
+    margin-bottom: 12px;
+    color: #555;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.ingredients-list li::marker {
+    color: #2e7d32;
+}
+
+/* APPLIANCES */
+
+.appliances-list {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.appliances-list li {
+    margin-bottom: 12px;
+    color: #555;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.appliances-list li::marker {
+    color: #2e7d32;
+}
+
+/* PREPARATION STEPS */
+
+.steps-list {
+    padding-left: 25px;
+    margin: 0;
+}
+
+.steps-list li {
+    margin-bottom: 18px;
+    padding-left: 8px;
+    color: #555;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.steps-list li::marker {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+/* TABLET */
+
+@media (max-width: 768px) {
+
+    .recipe-details-page {
+        padding: 25px 15px;
+    }
+
+    .recipe-details-page h1 {
+        font-size: 28px;
+    }
+
+    .details-image {
+        height: 280px;
+    }
+
+    .details-info {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .details-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .details-section {
+        padding: 20px;
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+
+    .recipe-details-page h1 {
+        font-size: 25px;
+    }
+
+    .details-image {
+        height: 220px;
+    }
+
+    .details-info {
+        gap: 10px;
+    }
+
+    .details-info > div {
+        padding: 15px;
+    }
+
+    .details-info strong {
+        font-size: 13px;
+    }
+
+    .details-info p {
+        font-size: 18px;
+    }
+
+    .details-section {
+        padding: 20px;
+    }
+
+    .details-section h2 {
+        font-size: 21px;
+    }
+
+    .ingredients-list li,
+    .appliances-list li,
+    .steps-list li {
+        font-size: 15px;
+    }
 }
 
 /* RESPONSIVE */
