@@ -13,7 +13,7 @@
             </div>
 
             <div class="hero-image">
-                <img src="images/chicken-coconut-curry.jpg"
+                <img src="images/coco-chicken.jpg"
                      alt="Delicious affordable meal">
             </div>
         </div>
@@ -71,6 +71,25 @@
 
         </div>
     </section>
+
+    <!-- OUR MISSION SECTION-->
+     <section>
+    <div class="hero-content-mission">
+     <div class="hero-text">
+        <h1>Our <br> mission</h1>
+        <p>At Foodiz, we believe that eating well shouldn't be a luxury. 
+            Our mission is to make everyday cooking simpler, more affordable and accessible to everyone. 
+            What makes Foodiz different is that we don't just help you find recipes. 
+            We help you find recipes that fit your life. By taking into account your budget, dietary needs, available kitchen equipment and the time you have to cook, 
+            Foodiz offers practical meal ideas tailored to your circumstances. 
+            Because good food shouldn't require a big budget, a fully equipped kitchen or hours of preparation.</p>
+     </div>   
+     <div class="hero-image">
+        <img src="images/creamy-mushroom.jpg"
+                  alt="Delicious affordable meal">
+     </div>
+     </div>
+     </section>
 
     <!-- PARTNERS SECTION -->
     <section class="partners" id="partners">

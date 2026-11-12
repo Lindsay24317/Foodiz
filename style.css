@@ -459,6 +459,13 @@
 body {
     font-family: 'Poppins', sans-serif;
     background-color:white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main{
+    flex: 1;
 }
 
 a {
@@ -689,4 +696,18 @@ footer{
     font-size: 16px;
     font-weight: 600;
     transition: all 0.3s ease;
+}
+
+/*OUR MISSION*/
+.hero-content-mission {
+    min-height: 350px;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    padding: 35px 12%;
+    gap: 40px;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
 }
