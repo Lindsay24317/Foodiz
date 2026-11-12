@@ -1,3 +1,10 @@
+:root{
+    --red:#A93118;
+    --brown: #673A25;
+    --white:#E8E2D6;
+    --green:#6F8B3C;
+    --tan:#D3A275;
+}
 #map {
     height: 350px;
     width: 80%;
@@ -23,9 +30,9 @@
     display: block;
     border-radius: 12px;
     overflow: hidden;
-    background-color: white;
+    background-color:var(--tan);
     text-decoration: none;
-    color: #222;
+    color:var(--red);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s ease;
 }
