@@ -11,7 +11,7 @@ $routes = [
   ],
   
   /**
-   * Gestion des recettes
+   *Gestion des recettes
    */
   'recipes' => [
     'file' => 'pages/recipes/recipes.php',
@@ -36,12 +36,18 @@ $routes = [
     'title' => 'Delete a recipe',
     'roles' => ['admin'],
   ],
-
-  'recipies-edit' => [
+//corrected SPELLING from recipies to recipes
+  'recipes-edit' => [
     'file' => 'pages/recipes/recipes-update.php',
     'title' => 'Update a recipe',
     'roles' => ['admin'],
   ],
+//added by Farah for - route for favourites
+  'favourite' => [
+    'file' => 'pages/recipes/favourite.php',
+    'title' => 'Favourites',
+    'roles' => ['user', 'admin'],
+],
 
   /**
    * Gestion de la map
@@ -138,7 +144,7 @@ if ($requiredRoles !== null) {
 $file = $route["file"];
 $title = $route["title"];
 
-require_once 'config/database.php';
+require_once 'config/database.php'; 
 
 // Assembler les pages
 
