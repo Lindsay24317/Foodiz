@@ -474,6 +474,21 @@ VALUES
 (N'AC Lappersfort', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 51.180241, 3.2327611, N'09:00-22:00', NULL);
 GO
 
+/*
+    ANTI-GASPI - SEED DATA
+*/
+
+INSERT INTO dbo.food_banks
+(name, category, address, postal_code, city, latitude, longitude, opening_hours, phone)
+VALUES
+(N'Happy Hours Market', N'anti_gaspi', N'Adresse non renseignée', NULL, N'Unknown', 50.8981507, 4.3590854, N'Mo-Sa 17:00-20:00', NULL),
+
+(N'Happy Hours Market', N'anti_gaspi', N'Adresse non renseignée', NULL, N'Unknown', 50.8805449, 4.3294582, N'Mo-Sa 16:45-20:00', NULL),
+
+(N'Happy Hours Market', N'anti_gaspi', N'Adresse non renseignée', NULL, N'Unknown', 50.8240529, 4.4009277, NULL, NULL),
+
+(N'Happy Hours Market', N'anti_gaspi', N'Adresse non renseignée', NULL, N'Unknown', 50.8336959, 4.3666168, N'Mo-Fr 17:30-19:30', NULL);
+GO
 
 /* Dietary categories */
 

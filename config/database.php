@@ -3,7 +3,7 @@
 // Information de connexion à la base de données
 
 $source = "sqlsrv";
-$host = "WAD-07\IF3"; // Server name sur SSMS
+$host = "localhost"; // Server name sur SSMS
 $dbname = "foodiz";
 
 $dsn = "$source:Server=$host;Database=$dbname;TrustServerCertificate=true";

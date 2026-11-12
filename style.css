@@ -5,13 +5,83 @@
     --green:#6F8B3C;
     --tan:#D3A275;
 }
-#map {
-    height: 350px;
-    width: 80%;
-    margin: 20px auto;
-    border-radius: 12px;
 
+/* Titre de la carte */
+.map-title {
+    text-align: center;
+    color: var(--brown);
+    font-size: 36px;
+    font-weight: bold;
+    margin: 30px 0;
 }
+/* Barre de recherche */
+.map-search {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+
+    input {
+        width: 100%;
+        max-width: 450px;
+        padding: 12px 18px;
+        border: 2px solid var(--tan);
+        border-radius: 12px;
+        background-color: var(--white);
+        color: var(--brown);
+        font-size: 16px;
+        outline: none;
+
+        &:focus {
+            border-color: var(--green);
+        }
+    }
+}
+
+/* Boutons des filtres */
+.map-filters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 30px;
+
+    button {
+        padding: 12px 18px;
+        border: 2px solid var(--green);
+        border-radius: 25px;
+        background-color: var(--white);
+        color: var(--brown);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+
+        &:hover {
+            background-color: var(--green);
+            color: var(--white);
+            transform: scale(1.05);
+        }
+    }
+    /* Filtre sélectionné */
+    button.active {
+        background-color: var(--green);
+        color: var(--white);
+        border-color: var(--green);
+    }
+}
+
+/* Carte */
+#map {
+    width: 90%;
+    max-width: 1100px;
+    height: 550px;
+    margin: 0 auto 40px;
+    border: 3px solid var(--tan);
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(103, 58, 37, 0.15);
+    z-index: 0;
+}
+
 /*Farah - recipe cards css*/
 .recipes-section {
     max-width: 1200px;
