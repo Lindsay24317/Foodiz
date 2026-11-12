@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 // Information de connexion à la base de données
 
@@ -20,3 +20,4 @@ try {
 } catch (PDOException $e) {
   die("Erreur de connexion : " . $e->getMessage());
 }
+

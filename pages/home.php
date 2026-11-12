@@ -13,7 +13,7 @@
             </div>
 
             <div class="hero-image">
-                <img src="images/chicken-coconut-curry.jpg"
+                <img src="images/coco-chicken.jpg"
                      alt="Delicious affordable meal">
             </div>
         </div>
@@ -28,57 +28,68 @@
         <div class="category-container">
 
             <div class="category">
+            <a href="index.php?page=recipes&search=&category=1&">
                 <img src="images/chickpea-coconut-curry.jpg" alt="Vegan meal">
                 <h3>Vegan</h3>
+            </a>
             </div>
 
             <div class="category">
+                <a href="index.php?page=recipes&search=&category=2&">
                 <img src="images/vegetable-quiche.jpg" alt="Vegetarian meal">
                 <h3>Vegetarian</h3>
+                </a>
             </div>
 
             <div class="category">
+            <a href="index.php?page=recipes&search=&category=3&">
                 <img src="images/sweet-potato-black-bean-bowl.jpg" alt="Lactose-free meal">
                 <h3>Lactose-free</h3>
+            </a>
             </div>
 
             <div class="category">
+            <a href="index.php?page=recipes&search=&category=4&">
                 <img src="images/tuna-chickpea-salad.jpg" alt="Gluten-free meal">
                 <h3>Gluten-free</h3>
+            </a>
             </div>
 
             <div class="category">
+            <a href="index.php?page=recipes&search=&category=5&">
                 <img src="images/salmon-teriyaki-bowl.jpg" alt="Pescatarian meal">
                 <h3>Pescatarian</h3>
+            </a>
             </div>
 
             <div class="category">
+            <a href="index.php?page=recipes&search=&category=6&">
                 <img src="images/spaghetti-bolognese.jpg" alt="Regular meal">
                 <h3>Regular</h3>
+            </a>
             </div>
 
         </div>
     </section>
 
-
-    <!-- DISCOVER SECTION -->
-    <section class="discover">
-
-        <div class="discover-text">
-            <h2>Discover Affordable Recipes</h2>
-
-            <p>Simple, tasty and budget-friendly meals.</p>
-
-            <a href="index.php?page=recipes" class="secondary-btn">
-                Browse Recipes →
-            </a>
-        </div>
-
-        <img src="images/baked-salmon-potatoes.jpg"
-             alt="Affordable homemade recipe">
-
-    </section>
-
+    <!-- OUR MISSION SECTION-->
+     <section>
+    <div class="hero-content-mission">
+     <div class="hero-text">
+        <h1>Our <br> mission</h1>
+        <p>At Foodiz, we believe that eating well shouldn't be a luxury. 
+            Our mission is to make everyday cooking simpler, more affordable and accessible to everyone. 
+            What makes Foodiz different is that we don't just help you find recipes. 
+            We help you find recipes that fit your life. By taking into account your budget, dietary needs, available kitchen equipment and the time you have to cook, 
+            Foodiz offers practical meal ideas tailored to your circumstances. 
+            Because good food shouldn't require a big budget, a fully equipped kitchen or hours of preparation.</p>
+     </div>   
+     <div class="hero-image">
+        <img src="images/creamy-mushroom.jpg"
+                  alt="Delicious affordable meal">
+     </div>
+     </div>
+     </section>
 
     <!-- PARTNERS SECTION -->
     <section class="partners" id="partners">

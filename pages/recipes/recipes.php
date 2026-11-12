@@ -13,7 +13,7 @@ $time = $_GET['time'] ?? '';
 $favourites = $_GET['favourites'] ?? '';
 
 // Get the logged-in user's ID
-$userId = $_SESSION['user']['id_user'] ?? 0;
+$userId = $_SESSION['user']['id'] ?? 0;
 
 
 

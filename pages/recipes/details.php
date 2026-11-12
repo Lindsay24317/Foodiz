@@ -241,7 +241,7 @@ if ($recipe) {
 
         <!-- COOKING INSTRUCTIONS -->
 
-        <<div class="details-section">
+        <div class="details-section">
 
     <h2>Preparation steps</h2>
 

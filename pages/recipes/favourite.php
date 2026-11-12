@@ -1,18 +1,18 @@
 <?php
-
+// Only allow logged-in users
+if (!isset($_SESSION['user'])) {
+    header("Location: index.php?page=login");
+    exit;
+}
 // Get the logged-in user
-$userId = $_SESSION['user']['id_user'] ?? 0;
+$userId = $_SESSION['user']['id'];
 
 // Get the recipe ID
 $recipeId = $_POST['recipe_id'] ?? '';
 
-
-// Only allow logged-in users
-if ($userId == 0) {
-    header("Location: index.php?page=login");
-    exit;
+if (!$recipeId) {
+    exit("Recipe ID missing");
 }
-
 
 // Only accept the form submission
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
@@ -22,11 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 
 
 // Check if the recipe exists
-$sql = "SELECT * FROM dbo.recipes
-        WHERE id_recipe = :recipe_id";
+$sql = "SELECT id_recipe
+        FROM dbo.recipes
+        WHERE id_recipe = ?";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['recipe_id' => $recipeId]);
+$stmt->execute([$recipeId]);
 
 $recipe = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -36,18 +37,15 @@ if (!$recipe) {
 
 
 // Check if recipe is already saved
-$sql = "SELECT * FROM dbo.saved_recipes
-        WHERE user_id = :user_id
-        AND recipe_id = :recipe_id";
+$sql = "SELECT COUNT(*) 
+        FROM dbo.saved_recipes
+        WHERE user_id = ?
+        AND recipe_id = ?";
 
 $stmt = $pdo->prepare($sql);
+$stmt->execute([$userId, $recipeId]);
 
-$stmt->execute([
-    'user_id' => $userId,
-    'recipe_id' => $recipeId
-]);
-
-$saved = $stmt->fetch(PDO::FETCH_ASSOC);
+$saved = $stmt->fetchColumn();
 
 
 // Remove or add favourite
@@ -55,24 +53,20 @@ if ($saved) {
 
     // Remove favourite
     $sql = "DELETE FROM dbo.saved_recipes
-            WHERE user_id = :user_id
-            AND recipe_id = :recipe_id";
+            WHERE user_id = ?
+            AND recipe_id = ?";
 
 } else {
 
     // Add favourite
     $sql = "INSERT INTO dbo.saved_recipes
-            (user_id, recipe_id)
-            VALUES (:user_id, :recipe_id)";
+            (user_id, recipe_id, saved_at)
+            VALUES (?, ?, GETDATE())";
 
 }
 
 $stmt = $pdo->prepare($sql);
-
-$stmt->execute([
-    'user_id' => $userId,
-    'recipe_id' => $recipeId
-]);
+$stmt->execute([$userId, $recipeId]);
 
 
 // Return to the catalogue with filters
@@ -87,5 +81,5 @@ $filters = [
     'favourites' => $_POST['favourites'] ?? ''
 ];
 
-header("Location: index.php?" . http_build_query($filters));
+header("Location: index.php?page=userPage");
 exit;

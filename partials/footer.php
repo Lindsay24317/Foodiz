@@ -7,10 +7,11 @@
         <a href="index.php" class="footer-logo">Foodiz.</a>
 
         <div class="footer-links">
-            <a href="index.php">Home</a>
-            <a href="index.php?page=recipes">Recipes</a>
-            <a href="#partners">Partners</a>
-            <a href="index.php?page=contact">Contact</a>
+            <ul>
+            <li><a href="index.php">Home</a></li>
+            <li><a href="index.php?page=recipes">Recipes</a></li>
+            <li><a href="index.php?page=contact">Contact</a></li>
+            </ul>
         </div>
 
         <p>&copy; <?= date('Y') ?> Foodiz - Eat Well for Less.</p>

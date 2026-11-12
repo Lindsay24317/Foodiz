@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </form>
 
 <!-- Lien vers l'inscription -->
-<p>
+<p class="regist">
     Don't have an account?
     <a href="index.php?page=register">Register!</a>
 </p>
