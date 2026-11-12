@@ -9,56 +9,105 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 
+// Groupe pour stocker les marqueurs
+const markers = L.layerGroup().addTo(map);
+
  // Récupérer les lieux depuis notre base de données
 fetch("api/food_locations.php")
     .then(response => response.json())
     .then(lieux => {
 
-        // Parcourir les lieux
-        lieux.forEach(lieu => {
+            // Compter tous les lieux
+            document.getElementById("filter-all").textContent =
+                `Tous (${lieux.length})`;
+        
+            // Compter les banques alimentaires
+            document.getElementById("filter-food-bank").textContent =
+                `Banques alimentaires (${lieux.filter(lieu => lieu.category === "food_bank").length})`;
+        
+            // Compter les frigos solidaires
+            document.getElementById("filter-food-sharing").textContent =
+                `Frigos solidaires (${lieux.filter(lieu => lieu.category === "food_sharing").length})`;
+        
+            // Compter les restaurants sociaux
+            document.getElementById("filter-soup-kitchen").textContent =
+                `Restaurants sociaux (${lieux.filter(lieu => lieu.category === "soup_kitchen").length})`;
+        
+        
 
-            // Créer la fenêtre d'information
-            const popup = document.createElement("div");
+            // Stocker les marqueurs et leurs catégories
+            const tousLesMarqueurs = [];
 
-            // Nom du lieu
-            const nom = document.createElement("h3");
-            nom.textContent = lieu.name;
-            popup.appendChild(nom);
+                    
+                // Parcourir les lieux
+                lieux.forEach(lieu => {
 
-            // Adresse
-            if (lieu.address) {
-                const adresse = document.createElement("p");
-                adresse.textContent = "📍 " + lieu.address;
-                popup.appendChild(adresse);
-            }
 
-            // Ville
-            if (lieu.city && lieu.city !== "Unknown") {
-                const ville = document.createElement("p");
-                ville.textContent = "🏙️ " + lieu.city;
-                popup.appendChild(ville);
-            }
+                // Créer la fenêtre d'information
+                const popup = document.createElement("div");
 
-            // Horaires
-            if (lieu.opening_hours) {
-                const horaires = document.createElement("p");
-                horaires.textContent = "🕒 " + lieu.opening_hours;
-                popup.appendChild(horaires);
-            }
+                // Nom du lieu
+                const nom = document.createElement("h3");
+                nom.textContent = lieu.name;
+                popup.appendChild(nom);
 
-            // Téléphone
-            if (lieu.phone) {
-                const telephone = document.createElement("p");
-                telephone.textContent = "📞 " + lieu.phone;
-                popup.appendChild(telephone);
-            }
+                // Adresse
+                if (lieu.address) {
+                    const adresse = document.createElement("p");
+                    adresse.textContent = "📍 " + lieu.address;
+                    popup.appendChild(adresse);
+                }
 
-            // Ajouter le marqueur
-            L.marker([lieu.latitude, lieu.longitude])
-                .addTo(map)
+                // Ville
+                if (lieu.city && lieu.city !== "Unknown") {
+                    const ville = document.createElement("p");
+                    ville.textContent = "🏙️ " + lieu.city;
+                    popup.appendChild(ville);
+                }
+
+                // Horaires
+                if (lieu.opening_hours) {
+                    const horaires = document.createElement("p");
+                    horaires.textContent = "🕒 " + lieu.opening_hours;
+                    popup.appendChild(horaires);
+                }
+
+                // Téléphone
+                if (lieu.phone) {
+                    const telephone = document.createElement("p");
+                    telephone.textContent = "📞 " + lieu.phone;
+                    popup.appendChild(telephone);
+                }
+
+                // Créer le marqueur avec sa popup
+                const marqueur = L.marker([lieu.latitude, lieu.longitude])
+                .addTo(markers)
                 .bindPopup(popup);
-        });
+
+                // Garder le marqueur et sa catégorie
+                tousLesMarqueurs.push({
+                marqueur: marqueur,
+                categorie: lieu.category
+                });
+            });
+
+                // Filtrer les marqueurs
+                function filtrer(categorie) {
+                    markers.clearLayers();
+
+                    tousLesMarqueurs.forEach(lieu => {
+                        if (categorie === "all" || lieu.categorie === categorie) {
+                            lieu.marqueur.addTo(markers);
+                        }
+                    });
+                }
+                // Clic sur les boutons
+                document.getElementById("filter-all").addEventListener("click", () => filtrer("all"));
+                document.getElementById("filter-food-bank").addEventListener("click", () => filtrer("food_bank"));
+                document.getElementById("filter-food-sharing").addEventListener("click", () => filtrer("food_sharing"));
+                document.getElementById("filter-soup-kitchen").addEventListener("click", () => filtrer("soup_kitchen"));
     })
+
     .catch(error => {
         // Afficher les erreurs
         console.error("Erreur de chargement :", error);

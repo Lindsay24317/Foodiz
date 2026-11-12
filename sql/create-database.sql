@@ -382,6 +382,98 @@ GO
 /*
    15. SEED DATA
   */
+/*
+    FOOD BANKS - SEED DATA
+    Lieux alimentaires récupérés depuis OpenStreetMap
+*/
+
+INSERT INTO dbo.food_banks
+(name, category, address, postal_code, city, latitude, longitude, opening_hours, phone)
+VALUES
+(N'Poverello Leuven', N'food_bank', N'Sint-Maartenstraat 44', N'3000', N'Leuven', 50.8845525, 4.7031243, N'Mo-Tu,Th-Fr 10:00-14:00', N'+32 16 29 16 84'),
+
+(N'Episol', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8698677, 4.3816442, NULL, NULL),
+
+(N'S.O.S. La Bouée ASBL', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8340290, 4.3239265, NULL, NULL),
+
+(N'Cantine Associative des Goujons', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8344070, 4.3235406, NULL, NULL),
+
+(N'La Fontaine', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8337554, 4.3452291, N'Mo-Fr 10:00-13:00; We off', N'+32 2 510 09 10'),
+
+(N'Croix-Rouge – épicerie sociale', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8239929, 4.3268378, NULL, N'+32 2 348 96 10'),
+
+(N'Poverello Gent', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 51.0557457, 3.7155463, NULL, NULL),
+
+(N'Poverello Bruxelles I - Poverello Brussel I', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8375376, 4.3438778, NULL, NULL),
+
+(N'Poverello Bruxelles – Brussel II', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8595792, 4.3649256, NULL, NULL),
+
+(N'St. Vincentiusvereniging Ham Tessenderlo', N'food_bank', N'Pleintje 3', N'3945', N'Ham', 51.1027530, 5.1692301, NULL, N'+32 13 32 30 16'),
+
+(N'Le P''tit Maga', N'food_bank', N'Chaussée d''Alsemberg 95', NULL, N'Unknown', 50.6866910, 4.3689014, N'Tu 16:00-18:00; Th 09:30-11:30', NULL),
+
+(N'Lieu alimentaire sans nom (9041026264)', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.7408333, 4.2391750, NULL, NULL),
+
+(N'Les Capucines', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8384805, 4.3469663, NULL, N'+32 2 502 02 09'),
+
+(N'Banque Alimentaire Bruxelles-Brabant - Voedselbank Brussel-Brabant', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8950167, 4.3971711, NULL, N'+32 2 522 97 00'),
+
+(N'Société de Saint-Vincent de Paul - Sint-Vincentius a Paulo-vereniging', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8359863, 4.3796328, N'Mo,Th 10:30-12:30', N'+32 473 70 32 69'),
+
+(N'Voedselbank', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 51.1483887, 4.4344466, NULL, NULL),
+
+(N'Épicerie Sociale - Sociale kruidenierswinkel', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8769156, 4.3051761, N'Tu 09:00-11:00; Th 13:30-15:30', NULL),
+
+(N'Team Hope', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8193862, 5.2142572, NULL, NULL),
+
+(N'Poverello', N'food_bank', N'Adresse non renseignée', NULL, N'Unknown', 50.8377025, 4.3446520, NULL, N'+32 2 511 52 12'),
+
+(N'Vincentius Halen', N'food_bank', N'Diestersteenweg 42', NULL, N'Unknown', 50.9495333, 5.1084980, NULL, NULL);
+GO
+
+/*
+    FOODIZ - 34 nouveaux lieux OpenStreetMap
+*/
+
+INSERT INTO dbo.food_banks
+(name, category, address, postal_code, city, latitude, longitude, opening_hours, phone)
+VALUES
+(N'La Poissonnerie', N'soup_kitchen', N'Adresse non renseignée', NULL, N'Unknown', 50.867585, 4.3639948, N'Th 17:00-24:00; Fr 00:00-00:45', NULL),
+(N'Resto du cœur de Saint-Gilles', N'soup_kitchen', N'Adresse non renseignée', NULL, N'Unknown', 50.8292062, 4.3351706, NULL, NULL),
+(N'Open Free Go', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.861829, 4.3900362, N'24/7', NULL),
+(N'Poverello', N'soup_kitchen', N'Aalbeeksesteenweg 13', N'8500', N'Kortrijk', 50.8222024, 3.2588196, N'Mo-Fr 09:00-15:00', NULL),
+(N'Het Anker', N'soup_kitchen', N'Adresse non renseignée', NULL, N'Unknown', 50.8545047, 4.3487473, N'Mo-We,Fr 09:00-16:30; Th 09:00-13:00', NULL),
+(N'Frigo solidaire Laveu', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.6319512, 5.5575285, N'24/7', NULL),
+(N'Frigo Solidaire', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.8546577, 4.3508455, N'24/7', NULL),
+(N'Resto Jet', N'soup_kitchen', N'Adresse non renseignée', NULL, N'Unknown', 50.880547, 4.3292516, N'Mo-Fr 12:00-14:00', N'+32 496 26 78 68'),
+(N'Accueil Botanique', N'soup_kitchen', N'Rue de l''Evêché 12', N'4000', N'Liège', 50.637378, 5.57208, N'Mo-Fr 09:00-11:00', NULL),
+(N'Frigo Solidaire Lumière', N'food_sharing', N'Rue Sainte-Walburge 164', N'4000', N'Liège', 50.6575372, 5.5695305, NULL, NULL),
+(N'Friskot Frigo Solidaire', N'food_sharing', N'rue Saint-Léonard 332', N'4000', N'Liège', 50.650527, 5.5947866, N'Mo-Fr 18:00-19:00', NULL),
+(N'L’autre table - De andere tafel', N'soup_kitchen', N'Adresse non renseignée', NULL, N'Unknown', 50.87671, 4.3554059, N'Mo-Fr 08:00-16:00', N'+32 2 420 60 87'),
+(N'Free&Go Solidaire JOC', N'food_sharing', N'rue du Palais 25', N'4800', N'Verviers', 50.5903649, 5.8639066, NULL, NULL),
+(N'Share Food Frigo solidaire de Saint-Gilles', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.8224637, 4.3438367, N'Tu-Sa 10:00-12:00', NULL),
+(N'Share Food Frigo Solidaire de Forest', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.8264819, 4.3323284, N'Tu 10:00-12:00, Th 10:00-12:00, Sa-Su 10:00-12:00', NULL),
+(N'Frigo Solidaire Grand Hospice', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.854706, 4.3503416, N'Mo-Su 10:00-19:00', NULL),
+(N'Restaurant Social', N'soup_kitchen', N'Rue Volière 1', N'4000', N'Liège', 50.6470225, 5.5711917, N'Su 12:30-14:00', NULL),
+(N'Fairteiler', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.7078918, 6.0703036, NULL, NULL),
+(N'Papa Douala', N'soup_kitchen', N'Adresse non renseignée', NULL, N'Unknown', 50.8254844, 4.3468474, NULL, N'+32 479 30 28 49'),
+(N'Missionnaires de la Charité', N'soup_kitchen', N'Adresse non renseignée', NULL, N'Unknown', 50.8287488, 4.3336782, N'Tu 15:00-16:30; We 14:00-16:30', NULL),
+(N'Frigo solidaire de la chapelle Notre Dame de Grâce', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.6541933, 5.544913, N'24/7', NULL),
+(N'Garde manger solidaire Maison Intergénérationnelle', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.6883392, 5.5938338, NULL, NULL),
+(N'Foodsharing Ostbelgien', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.6751028, 6.0467258, N'24/7', NULL),
+(N'Foodsharing Ostbelgien Dorfhaus', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.6935084, 6.0852197, N'24/7', NULL),
+(N'Foosharing Ostbelgien', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.7122718, 6.0120913, N'24/7', NULL),
+(N'Frigo partagé de Marche', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.2282073, 5.3439047, N'24/7', NULL),
+(N'Étagère de fruits du verger', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.6576763, 5.9598485, N'24/7', NULL),
+(N'Point de partage sans nom (12912995046)', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.622356, 6.0404378, NULL, NULL),
+(N'Frigo solidaire du CPAS', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 50.1887233, 5.9593595, N'24/7', NULL),
+(N'Deelfrigo CKG Sint-Clara', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 51.2054331, 3.2294233, N'Mo-Su 07:00-21:00', NULL),
+(N'deelfrigo', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 51.2251792, 3.2335186, NULL, NULL),
+(N'Deelfrigo Deelhuis De Dijk', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 51.2289185, 3.2053953, N'24/7', NULL),
+(N'Ange Gardien', N'soup_kitchen', N'Adresse non renseignée', NULL, N'Unknown', 50.8799579, 4.3308345, NULL, NULL),
+(N'AC Lappersfort', N'food_sharing', N'Adresse non renseignée', NULL, N'Unknown', 51.180241, 3.2327611, N'09:00-22:00', NULL);
+GO
+
 
 /* Dietary categories */
 
