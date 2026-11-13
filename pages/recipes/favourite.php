@@ -81,5 +81,5 @@ $filters = [
     'favourites' => $_POST['favourites'] ?? ''
 ];
 
-header("Location: index.php?page=userPage");
+header("Location: index.php?page=recipes");
 exit;
