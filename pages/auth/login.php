@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
 
             // Rediriger vers la carte
-            header("Location: index.php?page=map");
+            header("Location: index.php?page=userPage");
             exit();
         }
     }
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </form>
 
 <!-- Lien vers l'inscription -->
-<p>
+<p class="regist">
     Don't have an account?
     <a href="index.php?page=register">Register!</a>
 </p>

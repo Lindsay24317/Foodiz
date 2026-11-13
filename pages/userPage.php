@@ -5,7 +5,7 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 // Récupération de l'id et de l'email de l'utilisateur
-$idUser = $_SESSION['user']['id'];
+$idUser = $_SESSION['user']['id'] ?? 0;
 
 $sql = "SELECT firstname, lastname, email
         FROM dbo.users
@@ -15,6 +15,8 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$idUser]);
 
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+$idUser = $_SESSION['user']['id'];
+
 
 //Récupération des recettes de l'utilisateur
 $sql = "SELECT r.id_recipe, 
@@ -36,47 +38,92 @@ $stmt->execute([$idUser]);
 $recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
+<!-- Page profil -->
+<section class="profile-page">
 
-<h1>Mon profil</h1>
+    <h1>My Account</h1>
 
-<h2>Mes informations</h2>
+    <!-- Informations personnelles -->
+    <div class="profile-info">
+        <h2>My Information</h2>
 
-<p>Prenom : <?= htmlspecialchars($user['firstname']) ?></p>
-<p>Nom : <?= htmlspecialchars($user['lastname']) ?></p>
-<p>Email : <?= htmlspecialchars($user['email']) ?></p>
+        <p><strong>First name:</strong> <?= htmlspecialchars($user['firstname']) ?></p>
+        <p><strong>Last name:</strong> <?= htmlspecialchars($user['lastname']) ?></p>
+        <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
+    </div>
 
-<h2>My recipes</h2>
+    <!-- Recettes favorites -->
+    <div class="profile-recipes">
+        <h2>My Favourite Recipes</h2>
+
 
 <!-- Vérification de si l'utilisateur possède des recettes -->
 <?php if (empty($recipes)): ?>
 
-    <p>You haven't saved any recipes yet.</p>
+<p>You haven't saved any recipes yet.</p>
 
 <?php else: ?>
 
-    <?php foreach ($recipes as $recipe): ?>
-    
-        <div class="card-recipe">
-    
-            <h3><?= htmlspecialchars($recipe['name']) ?></h3>
+<div class="recipes-grid">
 
-            <?php if (!empty($recipe['image'])): ?>
-            <img
-                src="<?= htmlspecialchars($recipe['image']) ?>"
-                alt="<?= htmlspecialchars($recipe['name']) ?>"
+    <?php foreach ($recipes as $recipe): ?>
+
+        <article class="recipe-card">
+
+            <div class="recipe-image-container">
+
+                <a href="index.php?page=recipes-details&id=<?= urlencode($recipe['id_recipe']) ?>">
+
+                    <?php if (!empty($recipe['image'])): ?>
+
+                        <img
+                            src="<?= htmlspecialchars($recipe['image']) ?>"
+                            alt="<?= htmlspecialchars($recipe['name']) ?>"
+                            class="recipe-image"
+                        >
+
+                    <?php endif; ?>
+
+                </a>
+
+            </div>
+
+            <a
+                href="index.php?page=recipes-details&id=<?= urlencode($recipe['id_recipe']) ?>"
+                class="recipe-card-link"
             >
-            <?php endif; ?>
-    
-            <p><?= htmlspecialchars($recipe['description']) ?></p>
-    
-            <p>Estimated cost : <?= htmlspecialchars($recipe['estimated_cost']) ?>€</p>
-    
-            <p>Preparation time : <?= htmlspecialchars($recipe['preparation_time']) ?> minutes</p>
-            
-            <p>Cooking time :
-                <?= htmlspecialchars($recipe['cooking_time']) ?> minutes
-            </p>
-        </div>
-    
+
+                <div class="recipe-info">
+
+                    <h2><?= htmlspecialchars($recipe['name']) ?></h2>
+
+                    <p>
+                        <?= htmlspecialchars($recipe['description'] ?? '') ?>
+                    </p>
+
+                    <div class="recipe-meta">
+
+                        <span>
+                            ⏱ <?= (int)$recipe['preparation_time'] + (int)$recipe['cooking_time'] ?> min
+                        </span>
+
+                        <span>
+                            <?= number_format((float)$recipe['estimated_cost'], 2, ',', ' ') ?> €
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </article>
+
     <?php endforeach; ?>
+
+</div>
+
 <?php endif; ?>
+
+    </div>
+</section>

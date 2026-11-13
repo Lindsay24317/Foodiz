@@ -132,4 +132,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </form>
 
-<p>Déjà inscrit ? <a href="index.php?page=login">Log in!</a></p>
+<p>Already have an account? <a href="index.php?page=login">Log in!</a></p>

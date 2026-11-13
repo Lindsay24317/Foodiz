@@ -19,10 +19,12 @@ $pageTitle = "About Foodiz";
         <!-- About Foodiz introduction -->
         <section class="about-hero">
             <h1>About Foodiz</h1>
+             <p class="slogan">Less Time Cooking, More Time Living.</p>
             <p>
                 Welcome to Foodiz! Our project helps users discover
-                food ideas and recipes based on their preferences.
+                food ideas and recipes based on your preferences.
             </p>
+           
         </section>
 
         <!-- Our mission -->

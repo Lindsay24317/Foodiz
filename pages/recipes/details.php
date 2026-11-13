@@ -168,6 +168,8 @@ if ($recipe) {
 
         <!-- INGREDIENTS -->
 
+        <div class="details-columns">
+
         <div class="details-section">
 
             <h2>Ingredients</h2>
@@ -234,11 +236,12 @@ if ($recipe) {
             <?php endif; ?>
 
         </div>
+        </div>
 
 
         <!-- COOKING INSTRUCTIONS -->
 
-        <<div class="details-section">
+        <div class="details-section">
 
     <h2>Preparation steps</h2>
 

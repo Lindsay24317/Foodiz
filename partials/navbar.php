@@ -1,5 +1,5 @@
 
-<nav>
+<nav class="navbar">
     <ul>
         <li><a href="index.php">Home</a></li>
         <li><a href="index.php?page=quiz">Take the Quiz</a></li>
