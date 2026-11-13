@@ -1,16 +1,16 @@
 
 <?php
 
-// ===================================
+
 // 1. GET THE RECIPE ID
-// ===================================
+
 
 $recipeId = $_GET['id'] ?? '';
 
 
-// ===================================
+
 // 2. GET THE RECIPE
-// ===================================
+
 
 $sql = "SELECT * FROM dbo.recipes
         WHERE id_recipe = :recipe_id";
@@ -21,9 +21,9 @@ $stmt->execute(['recipe_id' => $recipeId]);
 $recipe = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
-// ===================================
+
 // 3. GET THE RECIPE INFORMATION
-// ===================================
+
 
 $ingredients = [];
 $appliances = [];

@@ -14,7 +14,7 @@
 
 <body>
 
-    <h1>Foodiz Quiz</h1>
+    
 
   <!--  <button id="startQuiz" type="button">Start Quiz</button>-->
 

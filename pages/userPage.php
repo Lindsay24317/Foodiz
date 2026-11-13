@@ -57,73 +57,78 @@ $recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h2>My Favourite Recipes</h2>
 
 
-<!-- Vérification de si l'utilisateur possède des recettes -->
-<?php if (empty($recipes)): ?>
+        <!-- Vérification de si l'utilisateur possède des recettes -->
+        <?php if (empty($recipes)): ?>
 
-<p>You haven't saved any recipes yet.</p>
+            <p>You haven't saved any recipes yet.</p>
 
-<?php else: ?>
+        <?php else: ?>
 
-<div class="recipes-grid">
+            <div class="recipes-grid">
 
-    <?php foreach ($recipes as $recipe): ?>
+                <?php foreach ($recipes as $recipe): ?>
 
-        <article class="recipe-card">
+                    <article class="recipe-card">
+                       
+                        <div class="recipe-image-container">
+                             <!-- Delete from favourites -->
+                        <form action="index.php?page=remove-favourite" method="POST" class="delete-form">
+                            <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($recipe['id_recipe']) ?>">
+                            <button type="submit" class="remove-favourite-btn">
+                                X
+                            </button>
+                        </form>
 
-            <div class="recipe-image-container">
+                            <a href="index.php?page=recipes-details&id=<?= urlencode($recipe['id_recipe']) ?>">
 
-                <a href="index.php?page=recipes-details&id=<?= urlencode($recipe['id_recipe']) ?>">
+                                <?php if (!empty($recipe['image'])): ?>
 
-                    <?php if (!empty($recipe['image'])): ?>
+                                    <img
+                                        src="<?= htmlspecialchars($recipe['image']) ?>"
+                                        alt="<?= htmlspecialchars($recipe['name']) ?>"
+                                        class="recipe-image">
 
-                        <img
-                            src="<?= htmlspecialchars($recipe['image']) ?>"
-                            alt="<?= htmlspecialchars($recipe['name']) ?>"
-                            class="recipe-image"
-                        >
+                                <?php endif; ?>
 
-                    <?php endif; ?>
+                            </a>
 
-                </a>
+                        </div>
+
+                        <a
+                            href="index.php?page=recipes-details&id=<?= urlencode($recipe['id_recipe']) ?>"
+                            class="recipe-card-link">
+
+                            <div class="recipe-info">
+
+                                <h2><?= htmlspecialchars($recipe['name']) ?></h2>
+
+                                <p>
+                                    <?= htmlspecialchars($recipe['description'] ?? '') ?>
+                                </p>
+
+                                <div class="recipe-meta">
+
+                                    <span>
+                                        ⏱ <?= (int)$recipe['preparation_time'] + (int)$recipe['cooking_time'] ?> min
+                                    </span>
+
+                                    <span>
+                                        <?= number_format((float)$recipe['estimated_cost'], 2, ',', ' ') ?> €
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                    </article>
+
+                <?php endforeach; ?>
 
             </div>
 
-            <a
-                href="index.php?page=recipes-details&id=<?= urlencode($recipe['id_recipe']) ?>"
-                class="recipe-card-link"
-            >
-
-                <div class="recipe-info">
-
-                    <h2><?= htmlspecialchars($recipe['name']) ?></h2>
-
-                    <p>
-                        <?= htmlspecialchars($recipe['description'] ?? '') ?>
-                    </p>
-
-                    <div class="recipe-meta">
-
-                        <span>
-                            ⏱ <?= (int)$recipe['preparation_time'] + (int)$recipe['cooking_time'] ?> min
-                        </span>
-
-                        <span>
-                            <?= number_format((float)$recipe['estimated_cost'], 2, ',', ' ') ?> €
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </a>
-
-        </article>
-
-    <?php endforeach; ?>
-
-</div>
-
-<?php endif; ?>
+        <?php endif; ?>
 
     </div>
 </section>

@@ -1,5 +1,5 @@
-<div class="hero-content">
-            <div class="hero-text">
+<div class="home-content">
+            <div class="home-text">
                 <h1>Eat Better,<br>Spend Smarter!</h1>
 
                 <p>
@@ -12,7 +12,7 @@
                 </a>
             </div>
 
-            <div class="hero-image">
+            <div class="home-image">
                 <img src="images/coco-chicken.jpg"
                      alt="Delicious affordable meal">
             </div>
@@ -74,8 +74,8 @@
 
     <!-- OUR MISSION SECTION-->
      <section>
-    <div class="hero-content-mission">
-     <div class="hero-text">
+    <div class="home-content-mission">
+     <div class="home-text">
         <h1>Our <br> mission</h1>
         <p>At Foodiz, we believe that eating well shouldn't be a luxury. 
             Our mission is to make everyday cooking simpler, more affordable and accessible to everyone. 
@@ -84,7 +84,7 @@
             Foodiz offers practical meal ideas tailored to your circumstances. 
             Because good food shouldn't require a big budget, a fully equipped kitchen or hours of preparation.</p>
      </div>   
-     <div class="hero-image">
+     <div class="home-image">
         <img src="images/creamy-mushroom.jpg"
                   alt="Delicious affordable meal">
      </div>

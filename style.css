@@ -300,6 +300,8 @@
 
 .recipe-image-container {
     position: relative;
+    overflow: hidden;
+
 }
 
 .recipe-image {
@@ -366,6 +368,30 @@
 
 .favourite-btn:hover {
     transform: scale(1.1);
+}
+
+/* Delete btn */
+
+.delete-form{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+} 
+.remove-favourite-btn{
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: white;
+    color: var(--red);
+    font-size: 27px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: 0.3s;
 }
 
 /* NO RESULTS */
@@ -736,7 +762,7 @@
 /* LIENS */
 .navbar a {
     text-decoration: none;
-    color: rgb(3, 29, 3);
+    color: var(--white);
     font-size: 16px;
     font-weight: 600;
     transition: all 0.3s ease;
@@ -765,7 +791,7 @@ a {
     text-decoration: none;
 }
 
-.hero-content {
+.home-content {
     min-height: 350px;
     display: flex;
     align-items: center;
@@ -776,19 +802,19 @@ a {
     position: relative;
     overflow: hidden;
 }
-.hero-text {
+.home-text {
     flex: 1;
     max-width: 480px;
     z-index: 2;
 }
-.hero-text h1 {
+.home-text h1 {
     font-size: 54px;
     line-height: 1.05;
     font-weight: 800;
     color: var(--tan);
     margin-bottom: 20px;
 }
-.hero-text p {
+.home-text p {
     font-size: 18px;
     line-height: 1.4;
     color: #555d58;
@@ -802,7 +828,7 @@ a {
     gap: 12px;
     padding: 15px 35px;
     background: var(--orange);
-    color: white;
+    color: #17452F;
     border-radius: 40px;
     font-size: 19px;
     font-weight: 700;
@@ -812,9 +838,10 @@ a {
 .primary-btn:hover {
     background: var(--red);
     transform: translateY(-3px);
+    color: #ffffff;
 }
 
-.hero-image {
+.home-image {
     flex: 1.2;
     height: 320px;
     display: flex;
@@ -822,7 +849,7 @@ a {
     align-items: center;
 }
 
-.hero-image img {
+.home-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -985,14 +1012,13 @@ footer{
 }
 .footer-links a {
     text-decoration: none;
-    color: rgb(3, 29, 3);
+    color: var(--white);
     font-size: 16px;
     font-weight: 600;
-    transition: all 0.3s ease;
 }
 
 /*OUR MISSION*/
-.hero-content-mission {
+.home-content-mission {
     min-height: 350px;
     display: flex;
     flex-direction: row-reverse;
@@ -1005,7 +1031,6 @@ footer{
     overflow: hidden;
 }
 
-/*END */
 
 /* FOODIZ - FOOD PROFILE QUIZ - Parita*/
 

@@ -9,10 +9,10 @@ $routes = [
     'file' => 'pages/home.php',
     'title' => 'Homepage'
   ],
-  
-  /**
-   *Gestion des recettes
-   */
+
+
+  //Gestion des recettes
+
   'recipes' => [
     'file' => 'pages/recipes/recipes.php',
     'title' => 'List of recipes',
@@ -23,50 +23,54 @@ $routes = [
     'title' => 'Recipe Details',
   ],
 
-//added by Farah for - route for favourites
+  //added by Farah for - route for favourites
   'favourite' => [
     'file' => 'pages/recipes/favourite.php',
     'title' => 'Favourites',
     'roles' => ['user', 'admin'],
-],
+  ],
+  // Delete favourite route
+  'remove-favourite' => [
+    'file' => 'pages/recipes/remove-favourite.php',
+    'title' => 'Remove favourite',
+    'role' => ['user'],
+  ],
 
-  /**
-   * Gestion de la map
-   */
+  //Gestion de la map
+
   'map' => [
     'file' => 'pages/map.php',
     'title' => 'Foodiz - Map',
-],
+  ],
 
-  /**
-   * gestion du quiz
-   */
+
+  //Gestion du quiz
 
   'quiz' => [
     'file' => 'pages/quiz.php',
     'title' => 'Foodiz - Quiz',
   ],
 
-   /**
-   * gestion du sujet
-   */
+
+  //gestion du sujet
+
   'about' => [
     'file' => 'pages/about.php',
     'title' => 'About Us',
   ],
 
-   /**
-   * gestion de contact
-   */
+
+  //Gestion de contact
+
 
   'contact' => [
     'file' => 'pages/contact.php',
     'title' => 'Contact',
   ],
 
-  /**
-   * gestion de profile utilisateur
-   */
+
+  //Gestion de profile utilisateur
+
 
   'userPage' => [
     'file' => 'pages/userPage.php',
@@ -74,9 +78,9 @@ $routes = [
     'roles' => ['user', 'admin'],
   ],
 
-  /**
-   * Gestion de l'authentification
-   */
+
+  // Gestion de l'authentification
+
 
   'register' => [
     'file' => 'pages/auth/register.php',
@@ -124,7 +128,7 @@ if ($requiredRoles !== null) {
 $file = $route["file"];
 $title = $route["title"];
 
-require_once 'config/database.php'; 
+require_once 'config/database.php';
 
 // Assembler les pages
 
