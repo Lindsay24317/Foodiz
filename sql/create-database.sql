@@ -48,8 +48,7 @@ FOR LOGIN demo_user;
 
 
 GO
--- Droits minimaux : lecture + écriture sur les données.
--- On évite db_owner, qui donnerait tous les droits (dont DROP TABLE).
+
 ALTER ROLE db_datareader ADD MEMBER demo_user;
 
 ALTER ROLE db_datawriter ADD MEMBER demo_user;

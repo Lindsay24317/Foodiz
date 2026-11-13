@@ -13,10 +13,10 @@ $recipeId = $_GET['id'] ?? '';
 
 
 $sql = "SELECT * FROM dbo.recipes
-        WHERE id_recipe = :recipe_id";
+        WHERE id_recipe = ?";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['recipe_id' => $recipeId]);
+$stmt->execute([$recipeId]);
 
 $recipe = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -37,11 +37,11 @@ if ($recipe) {
             FROM dbo.recipe_ingredients ri
             JOIN dbo.ingredients i
             ON ri.ingredient_id = i.id_ingredient
-            WHERE ri.recipe_id = :recipe_id
+            WHERE ri.recipe_id = ?
             ORDER BY i.name";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['recipe_id' => $recipeId]);
+    $stmt->execute([$recipeId]);
 
     $ingredients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -52,11 +52,11 @@ if ($recipe) {
             FROM dbo.recipe_appliances ra
             JOIN dbo.appliances a
             ON ra.appliance_id = a.id_appliance
-            WHERE ra.recipe_id = :recipe_id
+            WHERE ra.recipe_id = ?
             ORDER BY a.name";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['recipe_id' => $recipeId]);
+    $stmt->execute([$recipeId]);
 
     $appliances = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -67,11 +67,11 @@ if ($recipe) {
             FROM dbo.recipe_categories rc
             JOIN dbo.dietary_categories dc
             ON rc.category_id = dc.id_category
-            WHERE rc.recipe_id = :recipe_id
+            WHERE rc.recipe_id = ?
             ORDER BY dc.name";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['recipe_id' => $recipeId]);
+    $stmt->execute([$recipeId]);
 
     $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

@@ -52,7 +52,7 @@ $routes = [
   ],
 
 
-  //gestion du sujet
+  //Gestion du sujet
 
   'about' => [
     'file' => 'pages/about.php',

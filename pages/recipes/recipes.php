@@ -45,7 +45,9 @@ $allergies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // 3. GET THE RECIPES
 
 
-$sql = "SELECT * FROM dbo.recipes WHERE 1=1";
+$sql = "SELECT * 
+        FROM dbo.recipes 
+        WHERE 1=1";
 
 $params = [];
 
@@ -149,10 +151,10 @@ $recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $sql = "SELECT recipe_id
         FROM dbo.saved_recipes
-        WHERE user_id = :user_id";
+        WHERE user_id = ?";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['user_id' => $userId]);
+$stmt->execute([$userId]);
 
 $savedRecipes = $stmt->fetchAll(PDO::FETCH_COLUMN);
 

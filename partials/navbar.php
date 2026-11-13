@@ -11,7 +11,7 @@
 
     <ul>
         <?php if (!isset($_SESSION['user'])) : ?>
-            <li><a href="index.php?page=login">Log In</a></li>
+            <li><a href="index.php?page=login">Sign In</a></li>
             <li><a href="index.php?page=register">Sign Up</a></li>
         <?php else : ?>
             <li><a href="index.php?page=userPage">My Account</a></li>

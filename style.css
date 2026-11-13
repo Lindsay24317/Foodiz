@@ -1031,6 +1031,7 @@ footer{
     overflow: hidden;
 }
 
+/* END HOMEPAGE */
 
 /* FOODIZ - FOOD PROFILE QUIZ - Parita*/
 
@@ -1519,6 +1520,7 @@ main:has(input[type="password"]) p {
         flex-direction: column;
         gap: 20px;
         text-align: center;
+        margin-top: auto;
     }
 
     .footer ul {
