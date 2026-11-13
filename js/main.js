@@ -4,23 +4,145 @@
 const foodProfileForm = document.getElementById("foodProfileForm");
 
 if (foodProfileForm) {
+              
+    // Get all seven questions
+    const questions = foodProfileForm.querySelectorAll("fieldset");
 
-    // Question 3: Regular cannot be combined with other diets
+    // Find the existing Save button
+    const saveButton = foodProfileForm.querySelector('button[type="submit"]');
 
-    const dietCheckboxes = document.querySelectorAll(
-        'input[name="diet"]'
-    );
+    // Put Save button inside the last question
+    const lastQuestion = questions[questions.length - 1];
+    lastQuestion.appendChild(saveButton);
+
+    // Current question number (starts at 0)
+    let currentQuestion = 0;
+
+    // Show progress
+    const progress = document.createElement("p");
+    foodProfileForm.prepend(progress);
+
+    // Show only the current question
+    function showQuestion(index) {
+
+        questions.forEach(function(question, i) {
+            question.style.display = i === index ? "block" : "none";
+        });
+
+        currentQuestion = index;
+
+        progress.textContent =
+            "Question " + (index + 1) + " of " + questions.length;
+
+        // Hide Save button except on final question
+        saveButton.style.display =
+            index === questions.length - 1 ? "inline-block" : "none";
+    }
+
+    // Check required questions
+    function validateQuestion(index) {
+
+        const requiredNames = ["people", "budget", "budgetPeriod"];
+
+        // Only first three questions are required
+        if (index < 3) {
+
+            const name = requiredNames[index];
+
+            const selected = foodProfileForm.querySelector(
+                'input[name="' + name + '"]:checked'
+            );
+
+            if (!selected) {
+                alert("Please answer this question before continuing.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Create navigation buttons for each question
+    questions.forEach(function(question, index) {
+
+        const navigation = document.createElement("div");
+        navigation.classList.add("quiz-navigation");
+
+        // Previous button
+        if (index > 0) {
+
+            const previousButton = document.createElement("button");
+
+            previousButton.type = "button";
+            previousButton.textContent = "Previous";
+
+            previousButton.addEventListener("click", function() {
+                showQuestion(index - 1);
+            });
+
+            navigation.appendChild(previousButton);
+        }
+
+        // Next button (questions 1 to 6)
+        if (index < questions.length - 1) {
+
+            const nextButton = document.createElement("button");
+
+            nextButton.type = "button";
+            nextButton.textContent = "Next";
+
+            nextButton.addEventListener("click", function() {
+
+                if (validateQuestion(index)) {
+                    showQuestion(index + 1);
+                }
+
+            });
+
+            navigation.appendChild(nextButton);
+        }
+
+        // Skip button only for optional questions 4 to 7
+        if (index >= 3) {
+
+            const skipButton = document.createElement("button");
+
+            skipButton.type = "button";
+
+            skipButton.textContent =
+                index === questions.length - 1
+                    ? "Skip & Save"
+                    : "Skip";
+
+            skipButton.addEventListener("click", function() {
+
+                if (index === questions.length - 1) {
+                    foodProfileForm.requestSubmit();
+                } else {
+                    showQuestion(index + 1);
+                }
+
+            });
+
+            navigation.appendChild(skipButton);
+        }
+
+        question.appendChild(navigation);
+    });
+
+    // Regular diet cannot be combined with other diets
+    const dietCheckboxes =
+        foodProfileForm.querySelectorAll('input[name="diet"]');
 
     const regularCheckbox = document.getElementById("regular");
 
-    dietCheckboxes.forEach(function (checkbox) {
+    dietCheckboxes.forEach(function(checkbox) {
 
-        checkbox.addEventListener("change", function () {
+        checkbox.addEventListener("change", function() {
 
             if (checkbox === regularCheckbox && checkbox.checked) {
 
-                // If Regular is selected, uncheck all other diets
-                dietCheckboxes.forEach(function (diet) {
+                dietCheckboxes.forEach(function(diet) {
                     if (diet !== regularCheckbox) {
                         diet.checked = false;
                     }
@@ -28,127 +150,82 @@ if (foodProfileForm) {
 
             } else if (checkbox !== regularCheckbox && checkbox.checked) {
 
-                // If another diet is selected, uncheck Regular
                 regularCheckbox.checked = false;
 
             }
-        }); 
-    });
-     // Question 4: Ingredients selection
-
-    const ingredientCheckboxes = foodProfileForm.querySelectorAll(
-        'input[name="ingredients"]'
-    );
-
-    const allIngredientsCheckbox = document.getElementById("allIngredients");
-
-    ingredientCheckboxes.forEach(function (checkbox) {
-
-        checkbox.addEventListener("change", function () {
-
-            if (checkbox === allIngredientsCheckbox && checkbox.checked) {
-
-                // If All is selected, uncheck other ingredients
-                ingredientCheckboxes.forEach(function (ingredient) {
-                    if (ingredient !== allIngredientsCheckbox) {
-                        ingredient.checked = false;
-                    }
-                });
-
-            } else if (checkbox !== allIngredientsCheckbox && checkbox.checked) {
-
-                // If another ingredient is selected, uncheck All
-                allIngredientsCheckbox.checked = false;
-            }
-        });
-    });
-
-    // Question 6: None cannot be combined with other allergies
-
-    const allergyCheckboxes = document.querySelectorAll(
-        'input[name="allergies"]'
-    );
-
-    const noAllergies = document.getElementById("noAllergies");
-
-    allergyCheckboxes.forEach(function (checkbox) {
-        checkbox.addEventListener("change", function () {
-
-            if (checkbox === noAllergies && checkbox.checked) {
-                allergyCheckboxes.forEach(function (item) {
-                    if (item !== noAllergies) {
-                        item.checked = false;
-                    }
-                });
-            } else if (checkbox !== noAllergies && checkbox.checked) {
-                noAllergies.checked = false;
-            }
 
         });
+
     });
 
-
-    // Save the selected answers
-
-    foodProfileForm.addEventListener("submit", function (event) {
+    // Save answers
+    foodProfileForm.addEventListener("submit", function(event) {
 
         event.preventDefault();
-        
-         // Question 1: People
-        const peopleInput = foodProfileForm.querySelector(
-            'input[name="people"]:checked'
-        );
 
-        // Question 2: Budget
-        const budgetInput = foodProfileForm.querySelector(
-            'input[name="budget"]:checked'
-        );
-
-        // Check required questions
-        if (!peopleInput || !budgetInput) {
-            alert("Please answer questions 1 and 2.");
-            return;
+        // Make sure the first three questions are answered
+        for (let i = 0; i < 3; i++) {
+            if (!validateQuestion(i)) {
+                showQuestion(i);
+                return;
+            }
         }
 
-        const people = Number(peopleInput.value);
-        const budget = Number(budgetInput.value);
+        const people = Number(
+            foodProfileForm.querySelector(
+                'input[name="people"]:checked'
+            ).value
+        );
 
-        // Question 3: Selected diets
+        const budget = Number(
+            foodProfileForm.querySelector(
+                'input[name="budget"]:checked'
+            ).value
+        );
+
+        const budgetPeriod = foodProfileForm.querySelector(
+            'input[name="budgetPeriod"]:checked'
+        ).value;
+
         const diets = Array.from(
             foodProfileForm.querySelectorAll(
                 'input[name="diet"]:checked'
             )
-        ).map(function (checkbox) {
-            return checkbox.value;
+        ).map(function(input) {
+            return input.value;
         });
 
-        // Question 4: Selected ingredients
-        const ingredients = Array.from(
+        const cookingTimeInput = foodProfileForm.querySelector(
+            'input[name="cookingTime"]:checked'
+        );
+
+        const cookingTime = cookingTimeInput
+            ? Number(cookingTimeInput.value)
+            : null;
+
+        const allergies = Array.from(
             foodProfileForm.querySelectorAll(
-                'input[name="ingredients"]:checked'
+                'input[name="allergies"]:checked'
             )
-        ).map(function (checkbox) {
-            return checkbox.value;
+        ).map(function(input) {
+            return input.value;
         });
 
-        // Custom ingredients entered by the user
-        const otherIngredients = foodProfileForm.querySelector(
-            "#otherIngredients"
-        ).value.trim();
+        const equipment = Array.from(
+            foodProfileForm.querySelectorAll(
+                'input[name="equipment"]:checked'
+            )
+        ).map(function(input) {
+            return input.value;
+        });
 
-        // Store all answers
         const foodProfile = {
             people: people,
             budget: budget,
+            budgetPeriod: budgetPeriod,
             diets: diets,
-            ingredients: ingredients,
-            otherIngredients: otherIngredients,
             cookingTime: cookingTime,
             allergies: allergies,
-            mealType: mealType,
-            cuisine: cuisine,
-            foodGoal: foodGoal,
-            dislikedIngredients: dislikedIngredients,
             equipment: equipment
         };
 
@@ -156,7 +233,11 @@ if (foodProfileForm) {
 
         document.getElementById("profileResult").textContent =
             JSON.stringify(foodProfile, null, 2);
+
+        alert("Your Food Profile answers have been collected!");
     });
 
+    // Start with question 1
+    showQuestion(0);
 }
  

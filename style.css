@@ -6,48 +6,62 @@
     --tan:#D3A275;
 }
 
-/* ABOUT PAGE */
+/* ABOUT PAGE - Parita*/
 
 .about-page {
     max-width: 1100px;
     margin: 40px auto;
     padding: 20px;
 }
+.about-hero .slogan {
+    color: var(--green);
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 15px;
+    letter-spacing: 0.5px;
+}
 
 .about-hero {
     text-align: center;
-    padding: 60px 20px;
-    background-color: #f0f9ff;
-    border-radius: 12px;
+    padding: 65px 25px;
+    background-color: var(--tan);
+    border-radius: 16px;
 }
 
 .about-hero h1 {
-    color: #252366;
-    font-size: 36px;
+    color: var(--red);
+    font-size: 38px;
 }
 
 .about-hero p {
-    max-width: 650px;
+    max-width: 700px;
     margin: 15px auto;
-    line-height: 1.7;
+    color: var(--brown);
+    line-height: 1.8;
 }
 
 .about-section {
     margin-top: 35px;
-    padding: 25px;
+    padding: 30px;
+    background-color: #fffaf3;
+    border-left: 5px solid var(--green);
+    border-radius: 12px;
 }
 
 .about-section h2 {
-    color: #252366;
+    color: var(--red);
     margin-bottom: 15px;
 }
 
 .about-section p,
 .about-section li {
+    color: var(--brown);
     line-height: 1.8;
 }
 
-/*for  MOBILE LAYOUT */
+.about-section li::marker {
+    color: var(--green);
+}
 
 @media (max-width: 768px) {
     .about-page {
@@ -64,10 +78,9 @@
     }
 
     .about-section {
-        padding: 15px;
+        padding: 18px;
     }
 }
-
 
 
 /* Titre de la carte */
@@ -146,6 +159,7 @@
     z-index: 0;
 }
 
+
 /*Farah - recipe cards css*/
 .recipes-section {
     max-width: 1200px;
@@ -202,11 +216,7 @@
     }
 }
 
-
-/* 
-   FOODIZ - RECIPE CATALOGUE
- */
-
+/* FOODIZ - RECIPE CATALOGUE */
 .recipes-page {
     max-width: 1200px;
     margin: 0 auto;
@@ -690,6 +700,7 @@
     font-weight: bold;
 }
 
+
 /* NAVBAR */
 .navbar{
     background-color: var(--green);
@@ -993,3 +1004,376 @@ footer{
     position: relative;
     overflow: hidden;
 }
+
+/*END */
+
+/* FOODIZ - FOOD PROFILE QUIZ - Parita*/
+
+.food-profile {
+    max-width: 750px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 5px 18px rgba(103, 58, 37, 0.12);
+}
+
+/* MAIN HEADING */
+
+.food-profile h2 {
+    text-align: center;
+    color: var(--brown);
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.food-profile > p {
+    text-align: center;
+    color: var(--brown);
+    margin-bottom: 25px;
+}
+
+/* QUESTION CARD */
+
+.food-profile fieldset {
+    border: 2px solid var(--tan);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 20px 0;
+    background-color: #fffaf3;
+}
+
+.food-profile legend {
+    color: var(--brown);
+    font-size: 20px;
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+/* ANSWER OPTIONS */
+
+.food-profile label {
+    display: block;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid var(--tan);
+    border-radius: 8px;
+    background-color: white;
+    color: var(--brown);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.food-profile label:hover {
+    background-color: #f5e5d2;
+}
+
+/* RADIO AND CHECKBOX */
+
+.food-profile input[type="radio"],
+.food-profile input[type="checkbox"] {
+    accent-color: var(--green);
+    margin-right: 10px;
+}
+
+/* PROGRESS TEXT */
+
+#foodProfileForm > p {
+    text-align: center;
+    color: var(--green);
+    font-weight: bold;
+    font-size: 17px;
+}
+
+/* NAVIGATION BUTTONS */
+
+.quiz-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.food-profile button {
+    background-color: var(--red);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 22px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.food-profile button:hover {
+    background-color: var(--brown);
+}
+
+/* SAVE BUTTON */
+
+#foodProfileForm > button[type="submit"] {
+    background-color: var(--green);
+    font-weight: bold;
+}
+
+#foodProfileForm > button[type="submit"]:hover {
+    background-color: var(--brown);
+}
+
+/* RESULT */
+
+#profileResult {
+    margin-top: 25px;
+    padding: 15px;
+    background-color: white;
+    color: var(--brown);
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    .food-profile {
+        margin: 20px 12px;
+        padding: 18px;
+    }
+
+    .food-profile h2 {
+        font-size: 24px;
+    }
+
+    .food-profile fieldset {
+        padding: 15px;
+    }
+
+    .food-profile legend {
+        font-size: 17px;
+    }
+
+    .quiz-navigation {
+        flex-wrap: wrap;
+    }
+
+    .quiz-navigation button {
+        flex: 1;
+    }
+}
+
+/* END FOOD PROFILE QUIZ */
+
+/*FOODIZ CONTACT PAGE - Parita*/
+
+.contact-page {
+    background-color: var(--white);
+    color: var(--brown);
+    padding-bottom: 50px;
+}
+
+/* Hero section */
+.contact-hero {
+    min-height: 280px;
+    background: linear-gradient(
+        rgba(211, 162, 117, 0.25),
+        rgba(211, 162, 117, 0.25)
+    ), var(--tan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.contact-hero-content h1 {
+    color: var(--red);
+    font-size: 48px;
+    margin: 10px 0;
+}
+
+.contact-hero-content p {
+    color: var(--brown);
+    font-size: 17px;
+}
+
+.contact-subtitle {
+    color: var(--green);
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 13px;
+}
+
+/* Contact information cards */
+.contact-info-section {
+    max-width: 1150px;
+    margin: -35px auto 60px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    position: relative;
+    align-items: stretch;
+}
+
+.contact-info-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 30px 22px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(103, 58, 37, 0.10);
+    border-bottom: 4px solid var(--green);
+}
+
+.contact-icon {
+    color: var(--red);
+    font-size: 32px;
+}
+
+.contact-info-card h3 {
+    color: var(--brown);
+    margin: 15px 0 10px;
+}
+
+.contact-info-card p {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.contact-info-card a {
+    display: block;
+    color: var(--red);
+    font-size: 13px;
+    margin: 8px 0;
+    overflow-wrap: anywhere;
+    text-decoration: none;
+}
+
+.contact-info-card a:hover {
+    color: var(--green);
+    text-decoration: underline;
+}
+
+/* Main contact section */
+.contact-main-section {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 60px;
+}
+
+.contact-form-container {
+    background-color: #fff;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(103, 58, 37, 0.08);
+}
+
+.contact-form-container h2,
+.contact-message-section h2 {
+    color: var(--red);
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.contact-form-group {
+    margin-top: 20px;
+}
+
+.contact-form-group label {
+    display: block;
+    color: var(--brown);
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.contact-form-group input,
+.contact-form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px;
+    border: 1px solid var(--tan);
+    border-radius: 7px;
+    background-color: var(--white);
+    color: var(--brown);
+    font-family: inherit;
+    font-size: 15px;
+}
+
+.contact-form-group input:focus,
+.contact-form-group textarea:focus {
+    outline: 2px solid var(--green);
+    border-color: var(--green);
+}
+
+.contact-form-group textarea {
+    resize: vertical;
+}
+
+.contact-submit-btn {
+    background-color: var(--red);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    padding: 14px 28px;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.contact-form-container > p {
+    color: var(--brown);
+    line-height: 1.6;
+}
+
+.contact-submit-btn:hover {
+    background-color: var(--brown);
+    transform: translateY(-2px);
+}
+
+/* Right side message */
+.contact-message-section {
+    padding: 35px 10px;
+    line-height: 1.8;
+}
+
+.contact-highlight {
+    background-color: var(--tan);
+    padding: 25px;
+    border-radius: 10px;
+    margin-top: 30px;
+}
+
+.contact-highlight h3 {
+    color: var(--red);
+    font-size: 25px;
+}
+
+.contact-highlight p {
+    color: var(--green);
+    font-weight: bold;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .contact-info-section {
+        grid-template-columns: 1fr;
+        margin-top: 25px;
+    }
+
+    .contact-main-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .contact-hero-content h1 {
+        font-size: 36px;
+    }
+
+    .contact-form-container {
+        padding: 22px;
+    }
+}
+
