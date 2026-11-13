@@ -38,16 +38,24 @@ $stmt->execute([$idUser]);
 $recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
+<!-- Page profil -->
+<section class="profile-page">
 
-<h1>Mon profil</h1>
+    <h1>My Account</h1>
 
-<h2>Mes informations</h2>
+    <!-- Informations personnelles -->
+    <div class="profile-info">
+        <h2>My Information</h2>
 
-<p>Prenom : <?= htmlspecialchars($user['firstname']) ?></p>
-<p>Nom : <?= htmlspecialchars($user['lastname']) ?></p>
-<p>Email : <?= htmlspecialchars($user['email']) ?></p>
+        <p><strong>First name:</strong> <?= htmlspecialchars($user['firstname']) ?></p>
+        <p><strong>Last name:</strong> <?= htmlspecialchars($user['lastname']) ?></p>
+        <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
+    </div>
 
-<h2>My recipes</h2>
+    <!-- Recettes favorites -->
+    <div class="profile-recipes">
+        <h2>My Favourite Recipes</h2>
+
 
 <!-- Vérification de si l'utilisateur possède des recettes -->
 <?php if (empty($recipes)): ?>
@@ -116,3 +124,6 @@ $recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <?php endif; ?>
+
+    </div>
+</section>

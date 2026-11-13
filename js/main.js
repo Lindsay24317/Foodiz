@@ -229,12 +229,84 @@ if (foodProfileForm) {
             equipment: equipment
         };
 
-        console.log(foodProfile);
+        // Masquer le quiz
+        foodProfileForm.style.display = "none";
 
-        document.getElementById("profileResult").textContent =
-            JSON.stringify(foodProfile, null, 2);
+        const result = document.getElementById("profileResult");
+        result.textContent = "Finding recipes that match your food profile...";
 
-        alert("Your Food Profile answers have been collected!");
+        // Envoyer les réponses à PHP
+        fetch("data/quiz_recipes.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(foodProfile)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Unable to load recipes");
+            }
+            return response.json();
+        })
+        .then(recipes => {
+
+            result.replaceChildren();
+
+            const title = document.createElement("h2");
+            title.textContent = "Recipes for you";
+            result.appendChild(title);
+
+            if (recipes.length === 0) {
+                const message = document.createElement("p");
+                message.textContent = "No recipes match your answers.";
+                result.appendChild(message);
+                return;
+            }
+
+            // Afficher les recettes
+            const grid = document.createElement("div");
+            grid.className = "recipes-grid";
+
+            recipes.forEach(recipe => {
+
+                const card = document.createElement("article");
+                card.className = "recipe-card";
+
+                const link = document.createElement("a");
+                link.href = "index.php?page=recipes-details&id="
+                    + encodeURIComponent(recipe.id_recipe);
+                link.className = "recipe-card-link";
+
+                const image = document.createElement("img");
+                image.src = recipe.image || "";
+                image.alt = recipe.name;
+                image.className = "recipe-image";
+
+                const info = document.createElement("div");
+                info.className = "recipe-info";
+
+                const name = document.createElement("h2");
+                name.textContent = recipe.name;
+
+                const description = document.createElement("p");
+                description.textContent = recipe.description || "";
+
+                const price = document.createElement("p");
+                price.textContent = Number(recipe.estimated_cost).toFixed(2) + " €";
+
+                info.append(name, description, price);
+                link.append(image, info);
+                card.appendChild(link);
+                grid.appendChild(card);
+            });
+
+            result.appendChild(grid);
+        })
+        .catch(error => {
+            console.error(error);
+            result.textContent = "An error occurred while loading recipes.";
+        });
     });
 
     // Start with question 1

@@ -1377,3 +1377,257 @@ footer{
     }
 }
 
+
+/* LOGIN ET REGISTER */
+
+/* Contenu des pages */
+main:has(input[type="password"]) {
+    width: 100%;
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 35px;
+    background-color: var(--white);
+    border: 2px solid var(--tan);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(103, 58, 37, 0.15);
+    flex: 0 1 auto;
+}
+
+/* Titres */
+main:has(input[type="password"]) h1,
+main:has(input[type="password"]) h2 {
+    text-align: center;
+    color: var(--brown);
+    margin-bottom: 25px;
+}
+
+/* Champs */
+main:has(input[type="password"]) input {
+    width: 100%;
+    padding: 12px;
+    margin: 5px 0 15px;
+    border: 2px solid var(--tan);
+    border-radius: 8px;
+    background-color: #fff;
+    color: var(--brown);
+    box-sizing: border-box;
+}
+
+/* Champs sélectionnés */
+main:has(input[type="password"]) input:focus {
+    outline: none;
+    border-color: var(--green);
+}
+
+/* Boutons */
+main:has(input[type="password"]) button,
+main:has(input[type="password"]) input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--green);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Survol des boutons */
+main:has(input[type="password"]) button:hover,
+main:has(input[type="password"]) input[type="submit"]:hover {
+    background-color: var(--brown);
+}
+
+/* Liens */
+main:has(input[type="password"]) a {
+    color: var(--red);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+main:has(input[type="password"]) a:hover {
+    text-decoration: underline;
+}
+
+/* Texte sous le formulaire */
+main:has(input[type="password"]) p {
+    text-align: center;
+    margin-top: 15px;
+    color: var(--brown);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    main:has(input[type="password"]) {
+        width: 90%;
+        padding: 20px;
+        margin: 30px auto;
+    }
+}
+
+
+/* RESPONSIVE NAVBAR ET FOOTER */
+@media (max-width: 1100px) {
+
+    .navbar {
+        height: auto;
+        padding: 20px;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .navbar ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px 25px;
+    }
+
+    .navbar a {
+        white-space: nowrap;
+    }
+
+    footer {
+        height: auto;
+        padding: 20px;
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .footer ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .footer-links a {
+        white-space: nowrap;
+    }
+}
+
+/* PETITS ECRANS */
+@media (max-width: 600px) {
+
+    .navbar::before {
+        font-size: 30px;
+    }
+
+    .navbar ul {
+        gap: 12px;
+    }
+
+    .navbar a {
+        font-size: 14px;
+    }
+
+    .footer-logo {
+        font-size: 28px;
+    }
+}
+
+
+/* PAGE PROFIL */
+.profile-page {
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto;
+    color: var(--brown);
+
+    h1 {
+        text-align: center;
+        font-size: 36px;
+        margin-bottom: 30px;
+    }
+}
+
+/* Informations personnelles */
+.profile-info {
+    background-color: var(--white);
+    border: 2px solid var(--tan);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 5px 15px rgba(103, 58, 37, 0.1);
+
+    h2 {
+        color: var(--red);
+        margin-bottom: 20px;
+    }
+
+    p {
+        margin: 12px 0;
+        font-size: 17px;
+    }
+
+    strong {
+        color: var(--brown);
+    }
+}
+
+/* Recettes favorites */
+.profile-recipes {
+    h2 {
+        color: var(--brown);
+        margin-bottom: 25px;
+    }
+
+    .recipes-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 25px;
+    }
+
+    .recipe-card {
+        border: 2px solid var(--tan);
+        border-radius: 15px;
+        overflow: hidden;
+        background-color: var(--white);
+        transition: 0.3s;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(103, 58, 37, 0.15);
+        }
+    }
+
+    .recipe-info {
+        padding: 20px;
+        color: var(--brown);
+
+        h2 {
+            font-size: 20px;
+            color: var(--red);
+            margin-bottom: 10px;
+        }
+    }
+
+    .recipe-meta {
+        margin-top: 15px;
+        color: var(--green);
+        font-weight: bold;
+    }
+}
+
+/* Responsive profil */
+@media (max-width: 900px) {
+    .profile-recipes .recipes-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-page {
+        width: 95%;
+        margin: 25px auto;
+    }
+
+    .profile-info {
+        padding: 20px;
+    }
+
+    .profile-recipes .recipes-grid {
+        grid-template-columns: 1fr;
+    }
+}

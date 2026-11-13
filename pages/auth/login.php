@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
 
             // Rediriger vers la carte
-            header("Location: index.php?page=map");
+            header("Location: index.php?page=userPage");
             exit();
         }
     }

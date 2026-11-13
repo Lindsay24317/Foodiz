@@ -113,11 +113,12 @@
 
         </form>
 
-        <pre id="profileResult"></pre>
+        <!-- Résultats du quiz -->
+        <div id="profileResult"></div>
 
     </section>
 
-    <script src="../js/main.js"></script>
+    <script src="js/main.js"></script>
 
 </body>
 </html>

@@ -16,32 +16,13 @@ $routes = [
   'recipes' => [
     'file' => 'pages/recipes/recipes.php',
     'title' => 'List of recipes',
-    'roles' => ['user', 'admin'],
   ],
 
   'recipes-details' => [
     'file' => 'pages/recipes/details.php',
     'title' => 'Recipe Details',
-    'roles' => ['user', 'admin'],
   ],
 
-  'recipes-create' => [
-    'file' => 'pages/recipes/create.php',
-    'title' => 'Create a Recipe',
-    'roles' => ['admin'],
-  ],
-
-  'recipes-delete' => [
-    'file' => 'pages/recipes/recipe-delete.php',
-    'title' => 'Delete a recipe',
-    'roles' => ['admin'],
-  ],
-//corrected SPELLING from recipies to recipes
-  'recipes-edit' => [
-    'file' => 'pages/recipes/recipes-update.php',
-    'title' => 'Update a recipe',
-    'roles' => ['admin'],
-  ],
 //added by Farah for - route for favourites
   'favourite' => [
     'file' => 'pages/recipes/favourite.php',
@@ -55,7 +36,6 @@ $routes = [
   'map' => [
     'file' => 'pages/map.php',
     'title' => 'Foodiz - Map',
-    'roles' => ['user', 'admin'],
 ],
 
   /**
